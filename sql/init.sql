@@ -3,7 +3,7 @@
 --   mysql -u root < sql/init.sql
 -- O desde phpMyAdmin: Importar este archivo.
 
-CREATE DATABASE IF NOT EXISTS daw2mvc
+CREATE DATABASE IF NOT EXISTS lenaul
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 

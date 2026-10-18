@@ -1,0 +1,31 @@
+/*HEADER*/
+.header {
+  background-image: url("Imagenes\banner.png");
+  background-size: cover;      /* La imagen cubre todo el header */
+  background-position: center; /* Centrada */
+  height: 300px;               /* Ajusta la altura */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ /* color: white; */               /* Texto visible sobre el fondo */
+}
+/*NAV*/
+nav ul {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+}
+.nav-derecho {
+  display: flex;
+  gap: 20px;
+}
+.nav-izquierdo {
+  display: flex;
+  gap: 20px;
+
+}
