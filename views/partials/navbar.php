@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 shadow-sm">
     <div class="container">
         <a class="navbar-brand fw-bold font-monospace text-warning fs-3" href="?controller=Home&action=Home">
-            LE <span class="text-white">NAULT</span>
+             <span class="text-white">LENAUL</span>
         </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"

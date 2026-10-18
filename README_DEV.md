@@ -6,6 +6,10 @@ La URL base está en `config/parameters.php`. Si usas XAMPP, cámbiala a `http:/
 Ruta de acceso a carpeta del proyecto
 "C:\xampp\htdocs\Proyecto_Lenaul"
 
+URL de las vistas
+URL para cargar la home
+http://localhost/Proyecto_Lenaul/?controller=Home&action=Home
+
 
 ## Estructura
 
