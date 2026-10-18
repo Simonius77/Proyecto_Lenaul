@@ -1,4 +1,4 @@
--- Daw2mvc — script de inicialización
+-- lenaul — script de inicialización
 -- Uso (MySQL/MariaDB):
 --   mysql -u root < sql/init.sql
 -- O desde phpMyAdmin: Importar este archivo.
