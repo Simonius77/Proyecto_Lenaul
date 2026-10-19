@@ -22,3 +22,4 @@ http://localhost/Proyecto_Lenaul/?controller=Home&action=Home
 | `views/` | Vistas + layout |
 | `config/` | Parámetros y conexión BD |
 | `sql/` | Scripts de base de datos |
+| `JS/` | Vistas del panel de administracion en JavaScript |
