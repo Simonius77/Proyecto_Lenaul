@@ -3,7 +3,7 @@ IMPORTANTE: Arrancar XAMPP y El servidor y la BDD
 La URL base está en `config/parameters.php`. Si usas XAMPP, cámbiala a `http://localhost/Proyecto_Lenaul/`.
 
 
-Ruta de acceso a carpeta del proyecto
+## Ruta de acceso a carpeta del proyecto
 "C:\xampp\htdocs\Proyecto_Lenaul"
 
 URL de las vistas
@@ -23,3 +23,8 @@ http://localhost/Proyecto_Lenaul/?controller=Home&action=Home
 | `config/` | Parámetros y conexión BD |
 | `sql/` | Scripts de base de datos |
 | `JS/` | Vistas del panel de administracion en JavaScript |
+
+## Ususario admin de pruebas:
+'Administrador'
+'admin@lenault.test'
+'Admin1234!'

@@ -6,7 +6,7 @@ class DataBase
     private const DB_PORT = 3307;
     private const DB_USER = 'root';
     private const DB_PASS = 'mi_password';
-    private const DB_NAME = 'lenaul';
+    private const DB_NAME = 'lenault';
 
     public static function connect(
         $host = self::DB_HOST,
