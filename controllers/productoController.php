@@ -1,15 +1,14 @@
+
 <?php
 
-include_once("models/CamisetaDAO.php");
-include_once("models/Camiseta.php");
+include_once("models/ProductoDAO.php");
+include_once("models/Producto.php");
 
 class productoController
 {
-    private const TALLAS_VALIDAS = ['XXL', 'XL', 'L', 'M', 'S'];
-
     public function index()
     {
-        $productos = CamisetaDAO::getAll();
+        $productos = ProductoDAO::getAll();
         $view = "views/productos/listado.php";
         include_once 'views/main.php';
     }
@@ -22,17 +21,34 @@ class productoController
 
     public function store()
     {
-        $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
-        $talla = isset($_POST['talla']) ? $_POST['talla'] : '';
-        $precio = isset($_POST['precio']) ? $_POST['precio'] : '';
+        $categoria_id = $_POST['categoria_id'] ?? '';
+        $nombre = trim($_POST['nombre'] ?? '');
+        $descripcion = trim($_POST['descripcion'] ?? '');
+        $precio = $_POST['precio'] ?? '';
+        $imagen = trim($_POST['imagen'] ?? '');
+        $activo = isset($_POST['activo']) ? 1 : 0;
 
-        if ($nombre === '' || !in_array($talla, self::TALLAS_VALIDAS, true) || !is_numeric($precio) || $precio < 0) {
+        if (
+            !ctype_digit((string) $categoria_id) ||
+            (int) $categoria_id < 1 ||
+            $nombre === '' ||
+            !is_numeric($precio) ||
+            (float) $precio < 0
+        ) {
             header('Location:?controller=producto&action=create');
             exit;
         }
 
-        $producto = new Camiseta($nombre, $talla, (float) $precio);
-        CamisetaDAO::store($producto);
+        $producto = new Producto(
+            categoria_id: (int) $categoria_id,
+            nombre: $nombre,
+            descripcion: $descripcion,
+            precio: (float) $precio,
+            imagen: $imagen,
+            activo: $activo
+        );
+
+        ProductoDAO::create($producto);
 
         header('Location:?controller=producto');
         exit;
@@ -45,7 +61,8 @@ class productoController
             exit;
         }
 
-        CamisetaDAO::destroy((int) $_GET['id']);
+        ProductoDAO::delete((int) $_GET['id']);
+
         header('Location:?controller=producto');
         exit;
     }
@@ -57,7 +74,8 @@ class productoController
             exit;
         }
 
-        $producto = CamisetaDAO::getById((int) $_GET['id']);
+        $producto = ProductoDAO::getById((int) $_GET['id']);
+
         if ($producto === null) {
             header('Location:?controller=producto');
             exit;
