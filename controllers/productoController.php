@@ -1,4 +1,5 @@
 
+
 <?php
 
 include_once("models/ProductoDAO.php");
@@ -21,6 +22,11 @@ class productoController
 
     public function store()
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location:?controller=producto');
+            exit;
+        }
+
         $categoria_id = $_POST['categoria_id'] ?? '';
         $nombre = trim($_POST['nombre'] ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
@@ -33,6 +39,7 @@ class productoController
             (int) $categoria_id < 1 ||
             $nombre === '' ||
             !is_numeric($precio) ||
+            !is_finite((float) $precio) ||
             (float) $precio < 0
         ) {
             header('Location:?controller=producto&action=create');
@@ -56,6 +63,11 @@ class productoController
 
     public function destroy()
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location:?controller=producto');
+            exit;
+        }
+
         if (!isset($_GET['id']) || !ctype_digit((string) $_GET['id'])) {
             header('Location:?controller=producto');
             exit;
