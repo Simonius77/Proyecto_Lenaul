@@ -1,7 +1,12 @@
+```php
 <h1>Crear producto</h1>
-<p><a href="?controller=producto">Volver al listado</a></p>
 
-<form action="?controller=producto&action=store" method="POST">
+<p>
+    <a href="?controller=producto">Volver al listado</a>
+</p>
+
+<form action="?controller=producto&action=store" method="POST" enctype="multipart/form-data">
+
     <label>
         Nombre
         <input
@@ -16,7 +21,7 @@
     <br><br>
 
     <label>
-        ID de categoría
+        Categoría
         <input
             type="number"
             name="categoria_id"
@@ -53,12 +58,13 @@
     <br><br>
 
     <label>
-        Imagen (ruta o nombre del archivo)
+        Imagen
         <input
-            type="text"
+            type="file"
             name="imagen"
             id="imagen"
-            maxlength="255"
+            accept="image/jpeg,image/png,image/webp"
+            required
         >
     </label>
 
@@ -76,5 +82,6 @@
 
     <br><br>
 
-    <button type="submit">Guardar</button>
+    <button type="submit">Guardar producto</button>
+
 </form>

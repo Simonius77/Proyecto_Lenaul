@@ -28,3 +28,12 @@ http://localhost/Proyecto_Lenaul/?controller=Home&action=Home
 'Administrador'
 'admin@lenault.test'
 'Admin1234!'
+
+## base de datos:
+Tabla Categorias 
+1 entrantes
+2 primeros
+3 segundos
+4 postres
+5 bebidas
+
