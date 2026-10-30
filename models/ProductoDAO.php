@@ -1,6 +1,10 @@
+
 <?php
 
 require_once __DIR__ . '/Producto.php';
+require_once __DIR__ . '/Plato.php';
+require_once __DIR__ . '/Bebida.php';
+require_once __DIR__ . '/Postre.php';
 require_once __DIR__ . '/../config/dataBase.php';
 
 class ProductoDAO
@@ -12,7 +16,11 @@ class ProductoDAO
     {
         $con = DataBase::connect();
 
-        $sql = "SELECT * FROM productos ORDER BY id DESC";
+        $sql = "SELECT p.*, c.nombre AS categoria_nombre
+                FROM productos p
+                INNER JOIN categorias c ON p.categoria_id = c.id
+                ORDER BY p.id DESC";
+
         $resultado = $con->query($sql);
 
         $productos = [];
@@ -33,7 +41,11 @@ class ProductoDAO
     {
         $con = DataBase::connect();
 
-        $sql = "SELECT * FROM productos WHERE id = ?";
+        $sql = "SELECT p.*, c.nombre AS categoria_nombre
+                FROM productos p
+                INNER JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.id = ?";
+
         $stmt = $con->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -49,7 +61,6 @@ class ProductoDAO
 
     /**
      * Insertar un producto.
-     * Devuelve el ID creado o false si falla.
      */
     public static function create(Producto $producto): int|false
     {
@@ -60,13 +71,14 @@ class ProductoDAO
         $descripcion = $producto->getDescripcion();
         $precio = $producto->getPrecio();
         $imagen = $producto->getImagen();
-        $activo = (int) $producto->isActivo();
+        $activo = (int) $producto->getActivo();
 
         $sql = "INSERT INTO productos
                 (categoria_id, nombre, descripcion, precio, imagen, activo)
                 VALUES (?, ?, ?, ?, ?, ?)";
 
         $stmt = $con->prepare($sql);
+
         $stmt->bind_param(
             "issdsi",
             $categoria_id,
@@ -103,7 +115,7 @@ class ProductoDAO
         $descripcion = $producto->getDescripcion();
         $precio = $producto->getPrecio();
         $imagen = $producto->getImagen();
-        $activo = (int) $producto->isActivo();
+        $activo = (int) $producto->getActivo();
 
         $sql = "UPDATE productos
                 SET categoria_id = ?,
@@ -115,6 +127,7 @@ class ProductoDAO
                 WHERE id = ?";
 
         $stmt = $con->prepare($sql);
+
         $stmt->bind_param(
             "issdsii",
             $categoria_id,
@@ -154,18 +167,30 @@ class ProductoDAO
     }
 
     /**
-     * Convertir una fila de MySQL en un objeto Producto.
+     * Convertir una fila de MySQL en su subclase correspondiente.
      */
     private static function mapearProducto(array $fila): Producto
     {
-        return new Producto(
-            categoria_id: (int) $fila['categoria_id'],
-            nombre: $fila['nombre'],
-            descripcion: $fila['descripcion'],
-            precio: (float) $fila['precio'],
-            imagen: $fila['imagen'],
-            activo: (bool) $fila['activo'],
-            id: (int) $fila['id']
-        );
+        $categoria = mb_strtolower(trim($fila['categoria_nombre']));
+
+        $datos = [
+            'categoria_id' => (int) $fila['categoria_id'],
+            'nombre' => $fila['nombre'],
+            'descripcion' => $fila['descripcion'],
+            'precio' => (float) $fila['precio'],
+            'imagen' => $fila['imagen'],
+            'activo' => (bool) $fila['activo'],
+            'id' => (int) $fila['id']
+        ];
+
+        if (str_contains($categoria, 'bebida')) {
+            return new Bebida(...$datos);
+        }
+
+        if (str_contains($categoria, 'postre')) {
+            return new Postre(...$datos);
+        }
+
+        return new Plato(...$datos);
     }
 }
