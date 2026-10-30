@@ -1,10 +1,14 @@
 
 
 
+
 <?php
 
 require_once __DIR__ . '/../models/ProductoDAO.php';
 require_once __DIR__ . '/../models/Producto.php';
+require_once __DIR__ . '/../models/Plato.php';
+require_once __DIR__ . '/../models/Bebida.php';
+require_once __DIR__ . '/../models/Postre.php';
 require_once __DIR__ . '/../models/CategoriaDAO.php';
 
 class productoController
@@ -19,7 +23,7 @@ class productoController
 
     public function create()
     {
-        // Cargar las categorías activas para el desplegable.
+        // Cargar las categorías para el desplegable.
         $categorias = CategoriaDAO::getAll();
 
         $view = "views/productos/create.php";
@@ -37,7 +41,7 @@ class productoController
         $nombre = trim($_POST['nombre'] ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
         $precio = $_POST['precio'] ?? '';
-        $activo = isset($_POST['activo']) ? 1 : 0;
+        $activo = isset($_POST['activo']);
 
         // Validar los datos básicos.
         if (
@@ -120,15 +124,27 @@ class productoController
             $imagen = 'Imagenes/' . $nombreArchivo;
         }
 
-        $producto = new Producto(
-            categoria_id: (int) $categoria_id,
-            nombre: $nombre,
-            descripcion: $descripcion,
-            precio: (float) $precio,
-            imagen: $imagen,
-            activo: $activo
-        );
+        // Crear la subclase según el nombre de la categoría.
+        $nombreCategoria = mb_strtolower(trim($categoria->getNombre()));
 
+        $datosProducto = [
+            'categoria_id' => (int) $categoria_id,
+            'nombre' => $nombre,
+            'descripcion' => $descripcion,
+            'precio' => (float) $precio,
+            'imagen' => $imagen,
+            'activo' => $activo
+        ];
+
+        if (str_contains($nombreCategoria, 'bebida')) {
+            $producto = new Bebida(...$datosProducto);
+        } elseif (str_contains($nombreCategoria, 'postre')) {
+            $producto = new Postre(...$datosProducto);
+        } else {
+            $producto = new Plato(...$datosProducto);
+        }
+
+        // Guardar el producto.
         ProductoDAO::create($producto);
 
         header('Location: ?controller=producto');
