@@ -1,7 +1,13 @@
-<!--pagina home-->
+<!-- Página home -->
+
 <!-- Banner Principal -->
 <div class="container-fluid p-0 mb-5">
-    <img src="Imagenes/banner_home.png" alt="Banner Lenault" class="img-fluid w-100" style="height: 400px; object-fit: cover;">
+    <img
+        src="<?= htmlspecialchars(url . 'Imagenes/banner_home.webp', ENT_QUOTES, 'UTF-8') ?>"
+        alt="Banner Lenault"
+        class="img-fluid w-100"
+        style="height: 400px; object-fit: cover;"
+    >
 </div>
 
 <section class="container">
@@ -12,22 +18,49 @@
         </div>
     </div>
 
-    <!-- Grid de Productos (Reutilizando estilo de Carta) -->
-    <div class="d-flex row g-0">
+    <!-- Grid de Productos -->
+    <div class="row g-0">
         <?php if (!empty($listaproductos)): ?>
             <?php foreach ($listaproductos as $producto): ?>
                 <div class="col-12 col-md-3 d-flex justify-content-center mb-4">
                     <div class="contenido-producto mb-5" style="width:24rem;">
-                        <img src="Imagenes/<?= $producto->getImagen() ?>" class="card-img" alt="<?= $producto->getNombre() ?>">
+
+                        <?php if (!empty($producto->getImagen())): ?>
+                            <img
+                                src="<?= htmlspecialchars(url . ltrim($producto->getImagen(), '/'), ENT_QUOTES, 'UTF-8') ?>"
+                                class="card-img"
+                                alt="<?= htmlspecialchars($producto->getNombre(), ENT_QUOTES, 'UTF-8') ?>"
+                                style="width: 100%; height: 220px; object-fit: cover;"
+                            >
+                        <?php else: ?>
+                            <div class="text-center p-5">
+                                Imagen no disponible
+                            </div>
+                        <?php endif; ?>
+
                         <div class="linea-amarilla"></div>
+
                         <div class="cuerpo-productos">
-                            <h4 class="titulo-producto"><?= $producto->getNombre() ?></h4>
-                            <p class="descripcion-producto"><?= $producto->getDescripcion() ?></p>
-                            <p><strong><?= $producto->getPrecio() ?> €</strong></p>
-                            <button class="boton-agregar">
-                                <a class="texto-boton" href="?controller=Producto&action=Producto">Ver en Carta</a>
-                            </button>
+                            <h4 class="titulo-producto">
+                                <?= htmlspecialchars($producto->getNombre(), ENT_QUOTES, 'UTF-8') ?>
+                            </h4>
+
+                            <p class="descripcion-producto">
+                                <?= htmlspecialchars($producto->getDescripcion() ?? '', ENT_QUOTES, 'UTF-8') ?>
+                            </p>
+
+                            <p>
+                                <strong><?= htmlspecialchars((string) $producto->getPrecio(), ENT_QUOTES, 'UTF-8') ?> €</strong>
+                            </p>
+
+                            <a
+                                class="boton-agregar texto-boton"
+                                href="<?= htmlspecialchars(url . '?controller=producto&action=index', ENT_QUOTES, 'UTF-8') ?>"
+                            >
+                                Ver en Carta
+                            </a>
                         </div>
+
                         <div class="linea-amarilla"></div>
                     </div>
                 </div>

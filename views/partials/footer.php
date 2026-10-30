@@ -12,7 +12,7 @@
             <p><a href="?controller=Home&action=politicas" class="text-black text-decoration-none" >Politicas de privacidad</a></p>
         </div>
         <div class="col-12 col-md-4 mb-2">    
-            <p class="text-black text-decoration-none" >&copyLenaul 2026</p>
+            <p class="text-black text-decoration-none" >&copyLenault 2026</p>
         </div>
     </div>
 </footer>

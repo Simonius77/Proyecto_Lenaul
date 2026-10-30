@@ -1,6 +1,6 @@
 /*HEADER*/
 .header {
-  background-image: url("Imagenes\banner.png");
+  background-image: url("Imagenes\banner_home.webp");
   background-size: cover;      /* La imagen cubre todo el header */
   background-position: center; /* Centrada */
   height: 300px;               /* Ajusta la altura */
