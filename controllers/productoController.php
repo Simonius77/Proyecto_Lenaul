@@ -43,7 +43,7 @@ class productoController
         $precio = $_POST['precio'] ?? '';
         $activo = isset($_POST['activo']);
 
-        // Validar los datos básicos.
+        // Validar los datos basicos.
         if (
             !ctype_digit((string) $categoria_id) ||
             (int) $categoria_id < 1 ||
@@ -56,7 +56,7 @@ class productoController
             exit;
         }
 
-        // Comprobar que la categoría existe y está activa.
+        // Comprobar que la categoría existe y esta activa.
         $categoria = CategoriaDAO::getById((int) $categoria_id);
 
         if ($categoria === null || !$categoria->getActivo()) {
@@ -124,7 +124,7 @@ class productoController
             $imagen = 'Imagenes/' . $nombreArchivo;
         }
 
-        // Crear la subclase según el nombre de la categoría.
+        // Crear la subclase segun el nombre de la categoría.
         $nombreCategoria = mb_strtolower(trim($categoria->getNombre()));
 
         $datosProducto = [
