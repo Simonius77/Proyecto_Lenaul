@@ -17,7 +17,7 @@
                     <a class="nav-link active" href="?controller=Home&action=Home">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="?controller=Producto&action=Producto">Carta</a>
+                    <a class="nav-link" href="?controller=Producto&action=index">Carta</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="?controller=Home&action=aboutus">Quiénes Somos</a>

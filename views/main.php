@@ -22,7 +22,13 @@
 <body>
     <main>
         <section>
-            <?php include_once $view; ?>
+            <?php
+                if (isset($view) && file_exists($view)) {
+                    include_once $view;
+                } else {
+                    echo "ERROR: No se encuentra la vista: " . htmlspecialchars($view ?? 'No definida');
+                }
+            ?>
         </section>    
     </main>
     <?php include_once __DIR__.'/partials/footer.php';?>
