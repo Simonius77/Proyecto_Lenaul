@@ -37,3 +37,16 @@ Tabla Categorias
 4 postres
 5 bebidas
 
+## merge de desarrollo a main
+1 Hacer commit de todos los cambios en desarrollo
+2 Cambiar a la rama main
+    git checkout main
+3 Actualizar la rama main
+    git pull origin main
+4 Fusionar desarrollo y main
+    git merge desarrollo
+5 Subir los cambios al github del main
+    git push origin main
+6 Volver a la rama desarrollo 
+    git checkout desarrollo
+
