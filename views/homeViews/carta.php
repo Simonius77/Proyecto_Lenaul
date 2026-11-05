@@ -1,4 +1,3 @@
-
 <?php
 // Convertimos los productos y sus ingredientes a JSON para JavaScript.
 $productosJS = [];
@@ -42,7 +41,7 @@ $ingredientesDisponibles = IngredienteDAO::getAll();
              class="rounded-pill"></div>
 
         <p class="text-muted mt-3 fs-5">
-            Sabores auténticos, ingredientes frescos y recetas tradicionales elaboradas con amor.
+            Sabores autenticos, ingredientes frescos y recetas tradicionales elaboradas con amor.
         </p>
     </div>
 
