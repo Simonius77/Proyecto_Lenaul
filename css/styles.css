@@ -1,15 +1,16 @@
-/*HEADER*/
+/* HEADER */
 .header {
-  background-image: url("Imagenes\banner_home.webp");
-  background-size: cover;      /* La imagen cubre todo el header */
+  background-image: url("../Imagenes/banner_home.webp");
+  background-size: cover;       /* La imagen cubre todo el header */
   background-position: center; /* Centrada */
   height: 300px;               /* Ajusta la altura */
   display: flex;
   align-items: center;
   justify-content: center;
- /* color: white; */               /* Texto visible sobre el fondo */
+  /* color: white; */             /* Texto visible sobre el fondo */
 }
-/*NAV*/
+
+/* NAV */
 nav ul {
   display: flex;
   justify-content: space-between;
@@ -18,21 +19,125 @@ nav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
-
 }
+
 .nav-derecho {
   display: flex;
   gap: 20px;
 }
+
 .nav-izquierdo {
   display: flex;
   gap: 20px;
-
 }
+
+/* IMAGEN DE PRODUCTO */
 .imagen-producto {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 12px;
-    display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+/* --- NUEVOS ESTILOS PARA LA SECCIÓN DE MENÚ / PRODUCTOS --- */
+
+/* Contenedor general de la categoría (PRIMEROS, SEGUNDOS, POSTRES) */
+.seccion-menu {
+  margin-bottom: 40px;
+}
+
+.seccion-menu h2 {
+  text-align: center;
+  font-family: sans-serif;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  color: #222;
+}
+
+/* Cuadrícula de productos (3 columnas como en la imagen) */
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Tarjeta individual de producto */
+.tarjeta-producto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Controles de cantidad (+ / - / número) */
+.control-cantidad {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.control-cantidad button {
+  background-color: #ffcc00; /* Amarillo característico */
+  border: none;
+  padding: 8px 15px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.control-cantidad button:hover {
+  background-color: #e6b800;
+}
+
+.control-cantidad input {
+  flex: 1;
+  border: none;
+  text-align: center;
+  font-size: 16px;
+  outline: none;
+  background: transparent;
+}
+
+/* Contenedor inferior: Precio y Botón Agregar */
+.info-agregar {
+  display: flex;
+  gap: 5px;
+}
+
+.precio {
+  background-color: #111;
+  color: #fff;
+  padding: 10px 12px;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+}
+
+.btn-agregar {
+  flex: 1;
+  background-color: #4a77cc; /* Tono azulado de los botones */
+  color: #fff;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn-agregar:hover {
+  background-color: #3b62b0;
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 768px) {
+  .grid-productos {
+    grid-template-columns: 1fr;
+  }
 }
