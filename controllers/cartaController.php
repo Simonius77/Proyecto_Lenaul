@@ -18,7 +18,7 @@ class cartaController
 
         $ingredientesDisponibles = IngredienteDAO::getAll();
 
-        $view = __DIR__ . '/../views/carta.php';
+        $view = __DIR__ . '/../views/homeViews/carta.php';
         require __DIR__ . '/../views/main.php';
     }
 }

@@ -52,6 +52,7 @@ class ProductoDAO
 
         $resultado = $stmt->get_result();
         $fila = $resultado->fetch_assoc();
+        //utilizar fetch_obj para obtener un objeto en lugar de un array asociativo
 
         $stmt->close();
         $con->close();
