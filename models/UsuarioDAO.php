@@ -1,28 +1,39 @@
-<?php 
 
-include_once 'model/Usuario.php';
-include_once 'config/dataBase.php';
+<?php
+
+include_once __DIR__ . '/Usuario.php';
+include_once __DIR__ . '/../config/dataBase.php';
 
 class UsuarioDAO {
-    
-    // Obtener usuario por ID
-    public static function getUsuarioByID($id_usuario){
-        $con = DataBase::connect();
-        $stmt = $con->prepare("SELECT * FROM usuario WHERE id_usuario = ?");
-        $stmt->bind_param('i', $id_usuario);
-        $stmt->execute();
-        $results = $stmt->get_result();
 
+    // Obtener usuario por ID
+    public static function getUsuarioByID($id) {
+        $con = DataBase::connect();
+
+        $stmt = $con->prepare(
+            "SELECT * FROM usuarios WHERE id = ?"
+        );
+
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+
+        $results = $stmt->get_result();
         $usuario = $results->fetch_object('Usuario');
+
+        $stmt->close();
         $con->close();
-        
+
         return $usuario;
     }
 
     // Obtener todos los usuarios
-    public static function getUsuarios(){
+    public static function getUsuarios() {
         $con = DataBase::connect();
-        $stmt = $con->prepare("SELECT * FROM usuarios");
+
+        $stmt = $con->prepare(
+            "SELECT * FROM usuarios"
+        );
+
         $stmt->execute();
         $results = $stmt->get_result();
 
@@ -32,121 +43,181 @@ class UsuarioDAO {
             $listaUsuarios[] = $usuario;
         }
 
-        $con->close();        
+        $stmt->close();
+        $con->close();
+
         return $listaUsuarios;
     }
-    
+
     // Autenticar usuario (LOGIN)
     public static function login($username, $password) {
         $con = DataBase::connect();
-        // Buscamos tanto por nombre como por email para mayor flexibilidad y evitar fallos
-        $stmt = $con->prepare("SELECT id_usuario, nombre, email, password, rol, telf, direccion FROM usuario WHERE nombre = ? OR email = ? LIMIT 1");
+
+        $stmt = $con->prepare(
+            "SELECT * FROM usuarios
+             WHERE nombre = ? OR email = ?
+             LIMIT 1"
+        );
+
         $stmt->bind_param('ss', $username, $username);
         $stmt->execute();
+
         $results = $stmt->get_result();
 
-        if ($results->num_rows > 0) {
-            $row = $results->fetch_assoc();
-            
-            // Verificar password
-            if (password_verify($password, $row['password'])) {
-                $usuario = new Usuario();
-                $usuario->setId_usuario($row['id_usuario']);
-                $usuario->setNombre($row['nombre']);
-                $usuario->setEmail($row['email']);
-                $usuario->setRol($row['rol']);
-                $usuario->setTelf($row['telf']);
-                $usuario->setDireccion($row['direccion']);
-                
-                $con->close();
-                return $usuario;
+        $usuario = false;
+
+        if ($row = $results->fetch_object('Usuario')) {
+
+            // Comprobar contraseña
+            if (password_verify($password, $row->getPassword())) {
+                $usuario = $row;
             }
         }
-        
+
+        $stmt->close();
         $con->close();
-        return false;
+
+        return $usuario;
     }
 
     // Buscar usuario por email
     public static function findByEmail($email) {
         $con = DataBase::connect();
-        $stmt = $con->prepare("SELECT id_usuario, nombre, email, rol FROM usuario WHERE email = ? LIMIT 1");
+
+        $stmt = $con->prepare(
+            "SELECT * FROM usuarios WHERE email = ? LIMIT 1"
+        );
+
         $stmt->bind_param('s', $email);
         $stmt->execute();
-        $results = $stmt->get_result();
 
-        if ($results->num_rows > 0) {
-            $row = $results->fetch_assoc();
-            $con->close();
-            return $row;
-        }
-        
+        $results = $stmt->get_result();
+        $usuario = $results->fetch_object('Usuario');
+
+        $stmt->close();
         $con->close();
-        return false;
+
+        return $usuario;
     }
 
-    // Actualizar contrasena
-    public static function updatePassword($user_id, $new_password) {
+    // Actualizar contraseña
+    public static function updatePassword($id, $new_password) {
         $con = DataBase::connect();
-        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-        
-        $stmt = $con->prepare("UPDATE usuarios SET password = ? WHERE id_usuario = ?");
-        $stmt->bind_param('si', $hashed_password, $user_id);
-        
+
+        $hashed_password = password_hash(
+            $new_password,
+            PASSWORD_DEFAULT
+        );
+
+        $stmt = $con->prepare(
+            "UPDATE usuarios SET password = ? WHERE id = ?"
+        );
+
+        $stmt->bind_param('si', $hashed_password, $id);
         $result = $stmt->execute();
+
+        $stmt->close();
         $con->close();
-        
+
         return $result;
     }
 
     // Insertar nuevo usuario
-    public static function insertUsuario($username, $email, $password, $telf = '', $direccion = '', $rol = 'cliente') {
+    public static function insertUsuario(
+        $nombre,
+        $email,
+        $password,
+        $telefono = '',
+        $direccion = '',
+        $fecha_nacimiento = null
+    ) {
         $con = DataBase::connect();
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        
-        $stmt = $con->prepare("INSERT INTO usuarios (nombre, email, password, telf, direccion, rol) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('ssssss', $username, $email, $hashed_password, $telf, $direccion, $rol);
-        
+
+        $hashed_password = password_hash(
+            $password,
+            PASSWORD_DEFAULT
+        );
+
+        // El rol se asigna desde el servidor
+        $rol = 'usuario';
+
+        $stmt = $con->prepare(
+            "INSERT INTO usuarios
+            (nombre, email, password, telefono, direccion, fecha_nacimiento, rol)
+            VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param(
+            'sssssss',
+            $nombre,
+            $email,
+            $hashed_password,
+            $telefono,
+            $direccion,
+            $fecha_nacimiento,
+            $rol
+        );
+
         $result = $stmt->execute();
+
+        $stmt->close();
         $con->close();
-        
+
         return $result;
     }
 
-    // Asignar rol a un usuario por email (útil para admin)
+    // Asignar rol a un usuario por email
     public static function setUserRoleByEmail($email, $role) {
         $con = DataBase::connect();
-        $stmt = $con->prepare("UPDATE usuarios SET rol = ? WHERE email = ?");
+
+        $stmt = $con->prepare(
+            "UPDATE usuarios SET rol = ? WHERE email = ?"
+        );
+
         $stmt->bind_param('ss', $role, $email);
         $result = $stmt->execute();
+
         $stmt->close();
         $con->close();
+
         return $result;
     }
 
-    // Actualizar usuario (Admin CRUD)
-    public static function updateUsuario($id_usuario, $nombre, $email, $rol) {
+    // Actualizar usuario
+    public static function updateUsuario($id, $nombre, $email, $rol) {
         $con = DataBase::connect();
-        $stmt = $con->prepare("UPDATE usuarios SET nombre = ?, email = ?, rol = ? WHERE id_usuario = ?");
-        $stmt->bind_param('sssi', $nombre, $email, $rol, $id_usuario);
+
+        $stmt = $con->prepare(
+            "UPDATE usuarios
+             SET nombre = ?, email = ?, rol = ?
+             WHERE id = ?"
+        );
+
+        $stmt->bind_param('sssi', $nombre, $email, $rol, $id);
         $result = $stmt->execute();
+
         $stmt->close();
         $con->close();
+
         return $result;
     }
 
-    // Eliminar usuario (Admin CRUD)
-    public static function deleteUsuario($id_usuario) {
+    // Eliminar usuario
+    public static function deleteUsuario($id) {
         $con = DataBase::connect();
-        $stmt = $con->prepare("DELETE FROM usuarios WHERE id_usuario = ?");
-        $stmt->bind_param('i', $id_usuario);
+
+        $stmt = $con->prepare(
+            "DELETE FROM usuarios WHERE id = ?"
+        );
+
+        $stmt->bind_param('i', $id);
         $result = $stmt->execute();
+
         $stmt->close();
         $con->close();
+
         return $result;
     }
 }
 
-
 ?>
-

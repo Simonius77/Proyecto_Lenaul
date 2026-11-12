@@ -1,205 +1,112 @@
+
 <?php
 
-    class Usuario {
-        private $id_usuario;
-        private $nombre;
-        private $email;
-        private $password;
-        private $telf;
-        private $direccion;
-        private $fecha_nacimiento;
-        private $rol;
-        private $fecha_registro;
+class Usuario {
 
+    private $id;
+    private $nombre;
+    private $email;
+    private $password;
+    private $telefono;
+    private $direccion;
+    private $fecha_nacimiento;
+    private $rol;
+    private $fecha_registro;
 
+    // Constructor vacío
+    public function __construct() {
 
-        //constructor vacio
-        public function __construct() {
-                
-        }
-
-
-        /**
-         * Obtener el valor de id_usuario
-         */ 
-        public function getId_usuario()
-        {
-                return $this->id_usuario;
-        }
-
-        /**
-         * Establecer el valor de id_usuario
-         *
-         * @return  self
-         */ 
-        public function setId_usuario($id_usuario)
-        {
-                $this->id_usuario = $id_usuario;
-
-                return $this;
-        }
-
-        /**
-         * Obtener el valor de nombre
-         */ 
-        public function getNombre()
-        {
-                return $this->nombre;
-        }
-
-        /**
-         * Establecer el valor de nombre
-         *
-         * @return  self
-         */ 
-        public function setNombre($nombre)
-        {
-                $this->nombre = $nombre;
-
-                return $this;
-        }
-
-        /**
-         * Obtener el valor de email
-         */ 
-        public function getEmail()
-        {
-                return $this->email;
-        }
-
-        /**
-         * Establecer el valor de email
-         *
-         * @return  self
-         */ 
-        public function setEmail($email)
-        {
-                $this->email = $email;
-
-                return $this;
-        }
-
-        /**
-         * Obtener el valor de direccion
-         */ 
-        public function getDireccion()
-        {
-                return $this->direccion;
-        }
-
-        /**
-         * Establecer el valor de direccion
-         *
-         * @return  self
-         */ 
-        public function setDireccion($direccion)
-        {
-                $this->direccion = $direccion;
-
-                return $this;
-        }
-
-        /**
-         * Obtener el valor de password
-         */ 
-        public function getPassword()
-        {
-                return $this->password;
-        }
-
-        /**
-         * Establecer el valor de password
-         *
-         * @return  self
-         */ 
-        public function setPassword($password)
-        {
-                $this->password = $password;
-
-                return $this;
-        }
-
-        /**
-         * Obtener el valor de telf
-         */ 
-        public function getTelf()
-        {
-                return $this->telf;
-        }
-
-        /**
-         * Establecer el valor de telf
-         *
-         * @return  self
-         */ 
-        public function setTelf($telf)
-        {
-                $this->telf = $telf;
-
-                return $this;
-        }
-
-        /**
-         * Obtener el valor de rol
-         */ 
-        public function getRol()
-        {
-                return $this->rol;
-        }
-
-        /**
-         * Establecer el valor de rol
-         *
-         * @return  self
-         */ 
-        public function setRol($rol)
-        {
-                $this->rol = $rol;
-
-                return $this;
-        }
-
-        /**
-         * Get the value of fecha_nacimiento
-         */ 
-        public function getFecha_nacimiento()
-        {
-                return $this->fecha_nacimiento;
-        }
-
-        /**
-         * Set the value of fecha_nacimiento
-         *
-         * @return  self
-         */ 
-        public function setFecha_nacimiento($fecha_nacimiento)
-        {
-                $this->fecha_nacimiento = $fecha_nacimiento;
-
-                return $this;
-        }
-
-        /**
-         * Get the value of fecha_registro
-         */ 
-        public function getFecha_registro()
-        {
-                return $this->fecha_registro;
-        }
-
-        /**
-         * Set the value of fecha_registro
-         *
-         * @return  self
-         */ 
-        public function setFecha_registro($fecha_registro)
-        {
-                $this->fecha_registro = $fecha_registro;
-
-                return $this;
-        }
     }
 
+    // Obtener y establecer ID
+    public function getId() {
+        return $this->id;
+    }
 
+    public function setId($id) {
+        $this->id = $id;
+        return $this;
+    }
+
+    // Obtener y establecer nombre
+    public function getNombre() {
+        return $this->nombre;
+    }
+
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+        return $this;
+    }
+
+    // Obtener y establecer email
+    public function getEmail() {
+        return $this->email;
+    }
+
+    public function setEmail($email) {
+        $this->email = $email;
+        return $this;
+    }
+
+    // Obtener y establecer password
+    public function getPassword() {
+        return $this->password;
+    }
+
+    public function setPassword($password) {
+        $this->password = $password;
+        return $this;
+    }
+
+    // Obtener y establecer teléfono
+    public function getTelefono() {
+        return $this->telefono;
+    }
+
+    public function setTelefono($telefono) {
+        $this->telefono = $telefono;
+        return $this;
+    }
+
+    // Obtener y establecer dirección
+    public function getDireccion() {
+        return $this->direccion;
+    }
+
+    public function setDireccion($direccion) {
+        $this->direccion = $direccion;
+        return $this;
+    }
+
+    // Obtener y establecer fecha de nacimiento
+    public function getFecha_nacimiento() {
+        return $this->fecha_nacimiento;
+    }
+
+    public function setFecha_nacimiento($fecha_nacimiento) {
+        $this->fecha_nacimiento = $fecha_nacimiento;
+        return $this;
+    }
+
+    // Obtener y establecer rol
+    public function getRol() {
+        return $this->rol;
+    }
+
+    public function setRol($rol) {
+        $this->rol = $rol;
+        return $this;
+    }
+
+    // Obtener y establecer fecha de registro
+    public function getFecha_registro() {
+        return $this->fecha_registro;
+    }
+
+    public function setFecha_registro($fecha_registro) {
+        $this->fecha_registro = $fecha_registro;
+        return $this;
+    }
+}
 
 ?>
