@@ -1,4 +1,5 @@
 
+
 <?php
 
 require_once __DIR__ . '/../config/dataBase.php';
@@ -32,7 +33,7 @@ class IngredienteDAO
 
         $ingredientes = [];
 
-        while ($fila = $resultado->fetch_assoc()) {
+        while ($fila = $resultado->fetch_object()) {
             $ingredientes[] = $fila;
         }
 
@@ -59,7 +60,7 @@ class IngredienteDAO
 
         $ingredientes = [];
 
-        while ($fila = $resultado->fetch_assoc()) {
+        while ($fila = $resultado->fetch_object()) {
             $ingredientes[] = $fila;
         }
 

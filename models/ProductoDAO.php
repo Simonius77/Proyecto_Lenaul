@@ -1,4 +1,5 @@
 
+
 <?php
 
 require_once __DIR__ . '/Producto.php';
@@ -25,7 +26,7 @@ class ProductoDAO
 
         $productos = [];
 
-        while ($fila = $resultado->fetch_assoc()) {
+        while ($fila = $resultado->fetch_object()) {
             $productos[] = self::mapearProducto($fila);
         }
 
@@ -51,8 +52,7 @@ class ProductoDAO
         $stmt->execute();
 
         $resultado = $stmt->get_result();
-        $fila = $resultado->fetch_assoc();
-        //utilizar fetch_obj para obtener un objeto en lugar de un array asociativo
+        $fila = $resultado->fetch_object();
 
         $stmt->close();
         $con->close();
@@ -170,18 +170,18 @@ class ProductoDAO
     /**
      * Convertir una fila de MySQL en su subclase correspondiente.
      */
-    private static function mapearProducto(array $fila): Producto
+    private static function mapearProducto(object $fila): Producto
     {
-        $categoria = mb_strtolower(trim($fila['categoria_nombre']));
+        $categoria = mb_strtolower(trim($fila->categoria_nombre));
 
         $datos = [
-            'categoria_id' => (int) $fila['categoria_id'],
-            'nombre' => $fila['nombre'],
-            'descripcion' => $fila['descripcion'],
-            'precio' => (float) $fila['precio'],
-            'imagen' => $fila['imagen'],
-            'activo' => (bool) $fila['activo'],
-            'id' => (int) $fila['id']
+            'categoria_id' => (int) $fila->categoria_id,
+            'nombre' => $fila->nombre,
+            'descripcion' => $fila->descripcion,
+            'precio' => (float) $fila->precio,
+            'imagen' => $fila->imagen,
+            'activo' => (bool) $fila->activo,
+            'id' => (int) $fila->id
         ];
 
         if (str_contains($categoria, 'bebida')) {

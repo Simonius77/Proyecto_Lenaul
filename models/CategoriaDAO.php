@@ -1,3 +1,4 @@
+
 <?php
 
 require_once __DIR__ . '/Categoria.php';
@@ -21,7 +22,7 @@ class CategoriaDAO
 
         $categorias = [];
 
-        while ($fila = $resultado->fetch_assoc()) {
+        while ($fila = $resultado->fetch_object()) {
             $categorias[] = self::mapearCategoria($fila);
         }
 
@@ -46,7 +47,7 @@ class CategoriaDAO
         $stmt->execute();
 
         $resultado = $stmt->get_result();
-        $fila = $resultado->fetch_assoc();
+        $fila = $resultado->fetch_object();
 
         $stmt->close();
         $con->close();
@@ -155,13 +156,13 @@ class CategoriaDAO
     /**
      * Convertir una fila de MySQL en un objeto Categoria.
      */
-    private static function mapearCategoria(array $fila): Categoria
+    private static function mapearCategoria(object $fila): Categoria
     {
         return new Categoria(
-            nombre: $fila['nombre'],
-            descripcion: $fila['descripcion'],
-            activo: (bool) $fila['activa'],
-            id: (int) $fila['id']
+            nombre: $fila->nombre,
+            descripcion: $fila->descripcion,
+            activo: (bool) $fila->activa,
+            id: (int) $fila->id
         );
     }
 }

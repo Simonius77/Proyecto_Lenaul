@@ -1,3 +1,4 @@
+
 <?php
 // Convertimos los productos y sus ingredientes a JSON para JavaScript.
 $productosJS = [];
@@ -18,10 +19,10 @@ foreach ($listaproductos as $producto) {
         'tipo' => $producto->getTipo(),
         'ingredientes' => array_map(function ($ingrediente) {
             return [
-                'id' => (int) $ingrediente['id'],
-                'nombre' => $ingrediente['nombre'],
-                'precio_extra' => (float) $ingrediente['precio_extra'],
-                'cantidad' => (float) $ingrediente['cantidad']
+                'id' => (int) $ingrediente->id,
+                'nombre' => $ingrediente->nombre,
+                'precio_extra' => (float) $ingrediente->precio_extra,
+                'cantidad' => (float) $ingrediente->cantidad
             ];
         }, $ingredientes)
     ];
@@ -161,9 +162,9 @@ const productos = <?= json_encode(
 const ingredientesDisponibles = <?= json_encode(
     array_map(function ($i) {
         return [
-            'id' => (int) $i['id'],
-            'nombre' => $i['nombre'],
-            'precio_extra' => (float) $i['precio_extra']
+            'id' => (int) $i->id,
+            'nombre' => $i->nombre,
+            'precio_extra' => (float) $i->precio_extra
         ];
     }, $ingredientesDisponibles),
     JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
@@ -612,7 +613,7 @@ function confirmarPedido() {
     );
 }
 
-// Cargar la carta al abrir la página.
+// Cargar la carta al abrir la pagina.
 mostrarCarta();
 </script>
 </div>
