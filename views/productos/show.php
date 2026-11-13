@@ -1,3 +1,8 @@
+<!--esta linea solo corrige un fallo del editor que no reconoce la variable $producto 
+    como un objeto Producto, me lo ha pasado la IA por que el fallo me volvia loco-->
+<?php
+/** @var Producto $producto */
+?>
 
 <h1>Detalle del producto</h1>
 <p><a href="?controller=producto">Volver al listado</a></p>

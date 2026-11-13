@@ -9,26 +9,26 @@ require_once __DIR__ . '/../models/Postre.php';
 require_once __DIR__ . '/../models/CategoriaDAO.php';
 require_once __DIR__ . '/../models/IngredienteDAO.php';
 
-class productoController {
-
-    public function index() {
-
+class productoController
+{
+    public function index()
+    {
         $productos = ProductoDAO::getAll();
 
         $view = "views/productos/listado.php";
         include 'views/main.php';
     }
 
-    public function create() {
-
+    public function create()
+    {
         $categorias = CategoriaDAO::getAll();
 
         $view = "views/productos/create.php";
         include 'views/main.php';
     }
 
-    public function store() {
-
+    public function store()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ?controller=producto');
             exit;
@@ -66,7 +66,6 @@ class productoController {
             isset($_FILES['imagen']) &&
             $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE
         ) {
-
             if ($_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
                 header('Location: ?controller=producto&action=create');
                 exit;
@@ -144,8 +143,8 @@ class productoController {
         exit;
     }
 
-    public function destroy() {
-
+    public function destroy()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ?controller=producto');
             exit;
@@ -166,8 +165,8 @@ class productoController {
         exit;
     }
 
-    public function show() {
-
+    public function show()
+    {
         if (
             !isset($_GET['id']) ||
             !ctype_digit((string) $_GET['id']) ||
@@ -188,8 +187,12 @@ class productoController {
         include 'views/main.php';
     }
 
-    public function personalizar() {
+    // ==========================================
+    // PERSONALIZAR PRODUCTO
+    // ==========================================
 
+    public function personalizar()
+    {
         if (
             !isset($_GET['id']) ||
             !ctype_digit((string) $_GET['id']) ||
@@ -201,7 +204,7 @@ class productoController {
 
         $id = (int) $_GET['id'];
 
-        // Obtener el producto.
+        // Obtener primero el producto.
         $producto = ProductoDAO::getById($id);
 
         if ($producto === null || !$producto->getActivo()) {
@@ -209,19 +212,35 @@ class productoController {
             exit;
         }
 
-        // Obtener ingredientes actuales del producto.
+        // Comprobar si es un plato.
+        if (!($producto instanceof Plato)) {
+            $mensaje = "Este producto no permite modificaciones.";
+
+            $ingredientesProducto = [];
+            $todosIngredientes = [];
+
+            $view = "views/productos/personalizar.php";
+            include 'views/main.php';
+            return;
+        }
+
+        // Obtener ingredientes originales del plato.
         $ingredientesProducto = IngredienteDAO::getByProductoId($id);
 
-        // Obtener todos los ingredientes disponibles.
+        // Obtener ingredientes disponibles.
         $todosIngredientes = IngredienteDAO::getAll();
 
-        // Cargar la vista de personalización.
+        // Cargar la vista.
         $view = "views/productos/personalizar.php";
         include 'views/main.php';
     }
 
-    public function agregarCarrito() {
+    // ==========================================
+    // AÑADIR PRODUCTO AL CARRITO
+    // ==========================================
 
+    public function agregarCarrito()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ?controller=carta&action=index');
             exit;
@@ -238,6 +257,7 @@ class productoController {
             exit;
         }
 
+        // Obtener producto.
         $producto = ProductoDAO::getById($productoId);
 
         if ($producto === null || !$producto->getActivo()) {
@@ -245,19 +265,33 @@ class productoController {
             exit;
         }
 
-        // Ingredientes originales.
-        $originales = IngredienteDAO::getByProductoId($productoId);
-
-        $seleccionados = $_POST['ingredientes'] ?? [];
-        $extras = $_POST['ingredientes_extra'] ?? [];
-
-        if (!is_array($seleccionados) || !is_array($extras)) {
-            header('Location: ?controller=producto&action=personalizar&id=' . $productoId);
+        // Las bebidas y postres no se pueden modificar.
+        if (!($producto instanceof Plato)) {
+            header(
+                'Location: ?controller=producto&action=personalizar&id='
+                . $productoId
+            );
             exit;
         }
 
+        // Obtener ingredientes originales.
+        $originales = IngredienteDAO::getByProductoId($productoId);
+
+        // Recoger datos del formulario.
+        $seleccionados = $_POST['ingredientes'] ?? [];
+        $extras = $_POST['extras'] ?? [];
+
+        if (!is_array($seleccionados) || !is_array($extras)) {
+            header(
+                'Location: ?controller=producto&action=personalizar&id='
+                . $productoId
+            );
+            exit;
+        }
+
+        // Obtener IDs originales.
         $idsOriginales = array_map(
-            fn($i) => (int) $i->id,
+            fn($ingrediente) => (int) $ingrediente->id,
             $originales
         );
 
@@ -267,34 +301,54 @@ class productoController {
             fn($id) => in_array($id, $idsOriginales, true)
         )));
 
-        // Los extras no pueden duplicar ingredientes originales.
+        // Obtener todos los ingredientes activos.
+        $todosIngredientes = IngredienteDAO::getAll();
+
+        // Crear lista de IDs de ingredientes disponibles.
+        $ingredientesDisponibles = [];
+
+        foreach ($todosIngredientes as $ingrediente) {
+            $ingredientesDisponibles[(int) $ingrediente->id] = $ingrediente;
+        }
+
+        // Filtrar extras:
+        // - Deben existir.
+        // - Deben estar activos.
+        // - No pueden ser ingredientes originales.
+        // - No pueden repetirse.
         $idsExtras = array_values(array_unique(array_filter(
             array_map('intval', $extras),
-            fn($id) => $id > 0 && !in_array($id, $idsOriginales, true)
+            function ($id) use ($idsOriginales, $ingredientesDisponibles) {
+                return $id > 0 &&
+                    isset($ingredientesDisponibles[$id]) &&
+                    !in_array($id, $idsOriginales, true);
+            }
         )));
 
-        // Comprobar que los extras existen y están activos.
-        $ingredientesExtra = IngredienteDAO::getByIds($idsExtras);
-
-        if (count($ingredientesExtra) !== count($idsExtras)) {
-            header('Location: ?controller=producto&action=personalizar&id=' . $productoId);
+        // Máximo cuatro ingredientes adicionales.
+        if (count($idsExtras) > 4) {
+            header(
+                'Location: ?controller=producto&action=personalizar&id='
+                . $productoId
+            );
             exit;
         }
 
-        // Calcular el precio.
+        // Calcular precio inicial.
         $precio = $producto->getPrecio();
-
-        foreach ($ingredientesExtra as $ingrediente) {
-            $precio += (float) $ingrediente->precio_extra;
-        }
 
         // Preparar ingredientes del carrito.
         $ingredientesCarrito = [];
 
+        // Añadir ingredientes originales seleccionados.
         foreach ($originales as $ingrediente) {
-
-            if (in_array((int) $ingrediente->id, $idsSeleccionados, true)) {
-
+            if (
+                in_array(
+                    (int) $ingrediente->id,
+                    $idsSeleccionados,
+                    true
+                )
+            ) {
                 $ingredientesCarrito[] = [
                     'id' => (int) $ingrediente->id,
                     'nombre' => $ingrediente->nombre,
@@ -303,7 +357,11 @@ class productoController {
             }
         }
 
-        foreach ($ingredientesExtra as $ingrediente) {
+        // Añadir ingredientes adicionales y sumar su precio.
+        foreach ($idsExtras as $idExtra) {
+            $ingrediente = $ingredientesDisponibles[$idExtra];
+
+            $precio += (float) $ingrediente->precio_extra;
 
             $ingredientesCarrito[] = [
                 'id' => (int) $ingrediente->id,
@@ -330,7 +388,8 @@ class productoController {
             'ingredientes' => $ingredientesCarrito
         ];
 
-        header('Location: ?controller=producto&action=carrito');
+        // Volver a la carta.
+        header('Location: ?controller=carta&action=index');
         exit;
     }
 }

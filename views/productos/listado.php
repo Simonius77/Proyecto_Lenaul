@@ -1,3 +1,8 @@
+<!--esta linea solo corrige un fallo del editor que no reconoce la variable $productos 
+    como un array de objetos Producto, me lo ha pasado la IA por que el fallo me volvia loco-->
+<?php
+/** @var Producto[] $productos */
+?>
 
 <h1>Listado de Productos</h1>
 
@@ -15,10 +20,13 @@
         <th>Acciones</th>
     </tr>
 
+
+
     <?php if (empty($productos)) { ?>
         <tr>
             <td colspan="6">No hay productos todavía.</td>
         </tr>
+        
     <?php } ?>
 
     <?php foreach ($productos as $producto) { ?>
@@ -54,5 +62,6 @@
                 </form>
             </td>
         </tr>
-    <?php } ?>
+    <?php } ?> 
 </table>
+
