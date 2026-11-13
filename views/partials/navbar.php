@@ -1,90 +1,147 @@
-<!-- barra de navegacion principal -->
+
+
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+<!-- Barra de navegación principal -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3 shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold font-monospace text-warning fs-3" href="?controller=Home&action=Home">
-             <span class="text-white">LENAULT</span>
+
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold font-monospace text-warning fs-3"
+           href="?controller=home&action=index">
+            <span class="text-white">LENAULT</span>
         </a>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+
+        <!-- Botón responsive -->
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <!-- Menu lado izquierdo -->
+
+            <!-- Menú izquierdo -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
                 <li class="nav-item">
-                    <a class="nav-link active" href="?controller=Home&action=Home">Home</a>
+                    <a class="nav-link active"
+                       href="?controller=home&action=index">
+                        Home
+                    </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="?controller=carta&action=index">Carta</a>
+                    <a class="nav-link"
+                       href="?controller=carta&action=index">
+                        Carta
+                    </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="?controller=Home&action=aboutus">Quiénes Somos</a>
+                    <a class="nav-link"
+                       href="?controller=home&action=aboutus">
+                        Quiénes Somos
+                    </a>
                 </li>
+
             </ul>
 
-            <!-- Menu lado derecho -->
+            <!-- Menú derecho -->
             <ul class="navbar-nav ms-auto align-items-center">
+
                 <!-- Carrito -->
                 <li class="nav-item me-3">
-                    <a class="nav-link btn btn-outline-warning px-3 py-1.5 position-relative text-warning border-warning" href="?controller=Producto&action=carrito">
-                        <i class="fas fa-shopping-cart me-1"></i> Carrito
-                        <?php 
+
+                    <a class="nav-link btn btn-outline-warning px-3 py-1 position-relative text-warning border-warning"
+                       href="?controller=producto&action=carrito">
+
+                        <i class="fas fa-shopping-cart me-1"></i>
+                        Carrito
+
+                        <?php
                         $cart_count = 0;
+
                         if (isset($_SESSION['carrito']) && !empty($_SESSION['carrito'])) {
                             foreach ($_SESSION['carrito'] as $item) {
                                 $cart_count += $item['cantidad'];
                             }
                         }
-                        if ($cart_count > 0): 
+
+                        if ($cart_count > 0):
                         ?>
+
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 <?= $cart_count; ?>
                             </span>
+
                         <?php endif; ?>
+
                     </a>
                 </li>
 
-                <!-- Usuario / Mi Cuenta -->
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white fw-semibold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle me-1"></i> Hola, <?= htmlspecialchars($_SESSION['user_name']); ?>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="navbarDropdown">
-                            <?php 
-// Si el usuario tiene rol "admin", mostramos la opción del panel admin
-// Esta condición verifica la variable de sesión $_SESSION['user_role']
-// y la compara en minúsculas con la cadena 'admin'.
-// Si coincide, se agrega al dropdown el enlace al panel de administración.
-?>
-<?php if (strtolower($_SESSION['user_role']) === 'admin'): ?>
-    <li>
-        <a class="dropdown-item fw-bold text-primary" href="?controller=Admind&action=Admind">
-            <i class="fas fa-cog me-2"></i>Panel Administrador
-        </a>
-    </li>
-    <li><hr class="dropdown-divider"></li>
-<?php endif; ?>
-                            <li>
-                                <a class="dropdown-item text-danger" href="?controller=Usuario&action=Logout">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                <?php else: ?>
+                <!-- Usuario / My Lenault -->
+                <?php if (isset($_SESSION['usuario_id'])): ?>
+
                     <li class="nav-item">
-                        <a class="nav-link btn btn-warning text-dark px-3 fw-bold border-0" href="?controller=Usuario&action=Login" style="background: #ffc107;">
-                            <i class="fas fa-user me-1"></i> Mi Lenault
+
+                        <a class="nav-link btn btn-warning text-dark px-3 fw-bold border-0"
+                           href="?controller=usuario&action=panel"
+                           style="background: #ffc107;">
+
+                            <i class="fas fa-user-circle me-1"></i>
+
+                            <?= htmlspecialchars($_SESSION['usuario_nombre']); ?>
+
                         </a>
+
                     </li>
+
+                    <!-- Cerrar sesión -->
+                    <li class="nav-item">
+
+                        <a class="nav-link text-white"
+                           href="?controller=usuario&action=logout">
+
+                            <i class="fas fa-sign-out-alt me-1"></i>
+                            Cerrar sesión
+
+                        </a>
+
+                    </li>
+
+                <?php else: ?>
+
+                    <!-- Usuario sin iniciar sesión -->
+                    <li class="nav-item">
+
+                        <a class="nav-link btn btn-warning text-dark px-3 fw-bold border-0"
+                           href="?controller=usuario&action=login"
+                           style="background: #ffc107;">
+
+                            <i class="fas fa-user me-1"></i>
+                            My Lenault
+
+                        </a>
+
+                    </li>
+
                 <?php endif; ?>
+
             </ul>
+
         </div>
     </div>
 </nav>
 
-<!-- Font Awesome para los iconos -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Font Awesome -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

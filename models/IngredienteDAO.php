@@ -68,4 +68,50 @@ class IngredienteDAO
 
         return $ingredientes;
     }
+
+    /**
+     * Obtener ingredientes activos por sus IDs.
+     */
+    public static function getByIds(array $ids): array {
+        if (empty($ids)) {
+            return [];
+        }
+
+        $con = DataBase::connect();
+
+        $ids = array_values(array_unique(array_filter(
+            array_map('intval', $ids),
+            fn($id) => $id > 0
+        )));
+
+        if (empty($ids)) {
+            $con->close();
+            return [];
+        }
+
+        $marcadores = implode(',', array_fill(0, count($ids), '?'));
+        $tipos = str_repeat('i', count($ids));
+
+        $sql = "SELECT id, nombre, precio_extra
+                FROM ingredientes
+                WHERE activo = 1
+                AND id IN ($marcadores)";
+
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param($tipos, ...$ids);
+        $stmt->execute();
+
+        $resultado = $stmt->get_result();
+        $ingredientes = [];
+
+        while ($fila = $resultado->fetch_object()) {
+            $ingredientes[] = $fila;
+        }
+
+        $stmt->close();
+        $con->close();
+
+        return $ingredientes;
+    }
+    
 }

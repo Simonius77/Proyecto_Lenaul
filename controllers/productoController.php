@@ -1,7 +1,4 @@
 
-
-
-
 <?php
 
 require_once __DIR__ . '/../models/ProductoDAO.php';
@@ -10,28 +7,28 @@ require_once __DIR__ . '/../models/Plato.php';
 require_once __DIR__ . '/../models/Bebida.php';
 require_once __DIR__ . '/../models/Postre.php';
 require_once __DIR__ . '/../models/CategoriaDAO.php';
+require_once __DIR__ . '/../models/IngredienteDAO.php';
 
-class productoController
-{
-    public function index()
-    {
+class productoController {
+
+    public function index() {
+
         $productos = ProductoDAO::getAll();
 
         $view = "views/productos/listado.php";
         include 'views/main.php';
     }
 
-    public function create()
-    {
-        // Cargar las categorías para el desplegable.
+    public function create() {
+
         $categorias = CategoriaDAO::getAll();
 
         $view = "views/productos/create.php";
         include 'views/main.php';
     }
 
-    public function store()
-    {
+    public function store() {
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ?controller=producto');
             exit;
@@ -43,7 +40,6 @@ class productoController
         $precio = $_POST['precio'] ?? '';
         $activo = isset($_POST['activo']);
 
-        // Validar los datos basicos.
         if (
             !ctype_digit((string) $categoria_id) ||
             (int) $categoria_id < 1 ||
@@ -56,7 +52,6 @@ class productoController
             exit;
         }
 
-        // Comprobar que la categoría existe y esta activa.
         $categoria = CategoriaDAO::getById((int) $categoria_id);
 
         if ($categoria === null || !$categoria->getActivo()) {
@@ -71,18 +66,17 @@ class productoController
             isset($_FILES['imagen']) &&
             $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE
         ) {
+
             if ($_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
                 header('Location: ?controller=producto&action=create');
                 exit;
             }
 
-            // Limitar el tamaño a 3 MB.
             if ($_FILES['imagen']['size'] > 3 * 1024 * 1024) {
                 header('Location: ?controller=producto&action=create');
                 exit;
             }
 
-            // Validar el tipo real del archivo.
             $finfo = new finfo(FILEINFO_MIME_TYPE);
             $mime = $finfo->file($_FILES['imagen']['tmp_name']);
 
@@ -124,7 +118,7 @@ class productoController
             $imagen = 'Imagenes/' . $nombreArchivo;
         }
 
-        // Crear la subclase segun el nombre de la categoría.
+        // Crear la subclase según la categoría.
         $nombreCategoria = mb_strtolower(trim($categoria->getNombre()));
 
         $datosProducto = [
@@ -144,15 +138,14 @@ class productoController
             $producto = new Plato(...$datosProducto);
         }
 
-        // Guardar el producto.
         ProductoDAO::create($producto);
 
         header('Location: ?controller=producto');
         exit;
     }
 
-    public function destroy()
-    {
+    public function destroy() {
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ?controller=producto');
             exit;
@@ -173,8 +166,8 @@ class productoController
         exit;
     }
 
-    public function show()
-    {
+    public function show() {
+
         if (
             !isset($_GET['id']) ||
             !ctype_digit((string) $_GET['id']) ||
@@ -193,5 +186,151 @@ class productoController
 
         $view = "views/productos/show.php";
         include 'views/main.php';
+    }
+
+    public function personalizar() {
+
+        if (
+            !isset($_GET['id']) ||
+            !ctype_digit((string) $_GET['id']) ||
+            (int) $_GET['id'] < 1
+        ) {
+            header('Location: ?controller=carta&action=index');
+            exit;
+        }
+
+        $id = (int) $_GET['id'];
+
+        // Obtener el producto.
+        $producto = ProductoDAO::getById($id);
+
+        if ($producto === null || !$producto->getActivo()) {
+            header('Location: ?controller=carta&action=index');
+            exit;
+        }
+
+        // Obtener ingredientes actuales del producto.
+        $ingredientesProducto = IngredienteDAO::getByProductoId($id);
+
+        // Obtener todos los ingredientes disponibles.
+        $todosIngredientes = IngredienteDAO::getAll();
+
+        // Cargar la vista de personalización.
+        $view = "views/productos/personalizar.php";
+        include 'views/main.php';
+    }
+
+    public function agregarCarrito() {
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?controller=carta&action=index');
+            exit;
+        }
+
+        $productoId = filter_input(
+            INPUT_POST,
+            'producto_id',
+            FILTER_VALIDATE_INT
+        );
+
+        if (!$productoId || $productoId < 1) {
+            header('Location: ?controller=carta&action=index');
+            exit;
+        }
+
+        $producto = ProductoDAO::getById($productoId);
+
+        if ($producto === null || !$producto->getActivo()) {
+            header('Location: ?controller=carta&action=index');
+            exit;
+        }
+
+        // Ingredientes originales.
+        $originales = IngredienteDAO::getByProductoId($productoId);
+
+        $seleccionados = $_POST['ingredientes'] ?? [];
+        $extras = $_POST['ingredientes_extra'] ?? [];
+
+        if (!is_array($seleccionados) || !is_array($extras)) {
+            header('Location: ?controller=producto&action=personalizar&id=' . $productoId);
+            exit;
+        }
+
+        $idsOriginales = array_map(
+            fn($i) => (int) $i->id,
+            $originales
+        );
+
+        // Filtrar ingredientes originales seleccionados.
+        $idsSeleccionados = array_values(array_unique(array_filter(
+            array_map('intval', $seleccionados),
+            fn($id) => in_array($id, $idsOriginales, true)
+        )));
+
+        // Los extras no pueden duplicar ingredientes originales.
+        $idsExtras = array_values(array_unique(array_filter(
+            array_map('intval', $extras),
+            fn($id) => $id > 0 && !in_array($id, $idsOriginales, true)
+        )));
+
+        // Comprobar que los extras existen y están activos.
+        $ingredientesExtra = IngredienteDAO::getByIds($idsExtras);
+
+        if (count($ingredientesExtra) !== count($idsExtras)) {
+            header('Location: ?controller=producto&action=personalizar&id=' . $productoId);
+            exit;
+        }
+
+        // Calcular el precio.
+        $precio = $producto->getPrecio();
+
+        foreach ($ingredientesExtra as $ingrediente) {
+            $precio += (float) $ingrediente->precio_extra;
+        }
+
+        // Preparar ingredientes del carrito.
+        $ingredientesCarrito = [];
+
+        foreach ($originales as $ingrediente) {
+
+            if (in_array((int) $ingrediente->id, $idsSeleccionados, true)) {
+
+                $ingredientesCarrito[] = [
+                    'id' => (int) $ingrediente->id,
+                    'nombre' => $ingrediente->nombre,
+                    'extra' => false
+                ];
+            }
+        }
+
+        foreach ($ingredientesExtra as $ingrediente) {
+
+            $ingredientesCarrito[] = [
+                'id' => (int) $ingrediente->id,
+                'nombre' => $ingrediente->nombre,
+                'extra' => true
+            ];
+        }
+
+        // Iniciar sesión.
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['carrito'])) {
+            $_SESSION['carrito'] = [];
+        }
+
+        // Añadir producto al carrito.
+        $_SESSION['carrito'][] = [
+            'producto_id' => $producto->getId(),
+            'nombre' => $producto->getNombre(),
+            'precio' => $precio,
+            'cantidad' => 1,
+            'ingredientes' => $ingredientesCarrito
+        ];
+
+        header('Location: ?controller=producto&action=carrito');
+        exit;
     }
 }

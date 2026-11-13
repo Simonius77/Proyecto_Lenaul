@@ -1,4 +1,5 @@
 
+
 <?php
 
 include_once __DIR__ . '/Usuario.php';
@@ -10,15 +11,14 @@ class UsuarioDAO {
     public static function getUsuarioByID($id) {
         $con = DataBase::connect();
 
-        $stmt = $con->prepare(
-            "SELECT * FROM usuarios WHERE id = ?"
-        );
+        $sql = "SELECT * FROM usuarios WHERE id = ?";
 
+        $stmt = $con->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->execute();
 
-        $results = $stmt->get_result();
-        $usuario = $results->fetch_object('Usuario');
+        $resultado = $stmt->get_result();
+        $usuario = $resultado->fetch_object('Usuario');
 
         $stmt->close();
         $con->close();
@@ -30,16 +30,15 @@ class UsuarioDAO {
     public static function getUsuarios() {
         $con = DataBase::connect();
 
-        $stmt = $con->prepare(
-            "SELECT * FROM usuarios"
-        );
+        $sql = "SELECT * FROM usuarios";
 
+        $stmt = $con->prepare($sql);
         $stmt->execute();
-        $results = $stmt->get_result();
 
+        $resultado = $stmt->get_result();
         $listaUsuarios = [];
 
-        while ($usuario = $results->fetch_object('Usuario')) {
+        while ($usuario = $resultado->fetch_object('Usuario')) {
             $listaUsuarios[] = $usuario;
         }
 
@@ -49,26 +48,22 @@ class UsuarioDAO {
         return $listaUsuarios;
     }
 
-    // Autenticar usuario (LOGIN)
+    // Iniciar sesión
     public static function login($username, $password) {
         $con = DataBase::connect();
 
-        $stmt = $con->prepare(
-            "SELECT * FROM usuarios
-             WHERE nombre = ? OR email = ?
-             LIMIT 1"
-        );
+        $sql = "SELECT * FROM usuarios
+                WHERE nombre = ? OR email = ?
+                LIMIT 1";
 
+        $stmt = $con->prepare($sql);
         $stmt->bind_param('ss', $username, $username);
         $stmt->execute();
 
-        $results = $stmt->get_result();
-
+        $resultado = $stmt->get_result();
         $usuario = false;
 
-        if ($row = $results->fetch_object('Usuario')) {
-
-            // Comprobar contraseña
+        if ($row = $resultado->fetch_object('Usuario')) {
             if (password_verify($password, $row->getPassword())) {
                 $usuario = $row;
             }
@@ -84,15 +79,14 @@ class UsuarioDAO {
     public static function findByEmail($email) {
         $con = DataBase::connect();
 
-        $stmt = $con->prepare(
-            "SELECT * FROM usuarios WHERE email = ? LIMIT 1"
-        );
+        $sql = "SELECT * FROM usuarios WHERE email = ? LIMIT 1";
 
+        $stmt = $con->prepare($sql);
         $stmt->bind_param('s', $email);
         $stmt->execute();
 
-        $results = $stmt->get_result();
-        $usuario = $results->fetch_object('Usuario');
+        $resultado = $stmt->get_result();
+        $usuario = $resultado->fetch_object('Usuario');
 
         $stmt->close();
         $con->close();
@@ -109,17 +103,16 @@ class UsuarioDAO {
             PASSWORD_DEFAULT
         );
 
-        $stmt = $con->prepare(
-            "UPDATE usuarios SET password = ? WHERE id = ?"
-        );
+        $sql = "UPDATE usuarios SET password = ? WHERE id = ?";
 
+        $stmt = $con->prepare($sql);
         $stmt->bind_param('si', $hashed_password, $id);
-        $result = $stmt->execute();
+        $resultado = $stmt->execute();
 
         $stmt->close();
         $con->close();
 
-        return $result;
+        return $resultado;
     }
 
     // Insertar nuevo usuario
@@ -138,14 +131,13 @@ class UsuarioDAO {
             PASSWORD_DEFAULT
         );
 
-        // El rol se asigna desde el servidor
         $rol = 'usuario';
 
-        $stmt = $con->prepare(
-            "INSERT INTO usuarios
-            (nombre, email, password, telefono, direccion, fecha_nacimiento, rol)
-            VALUES (?, ?, ?, ?, ?, ?, ?)"
-        );
+        $sql = "INSERT INTO usuarios
+                (nombre, email, password, telefono, direccion, fecha_nacimiento, rol)
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        $stmt = $con->prepare($sql);
 
         $stmt->bind_param(
             'sssssss',
@@ -158,65 +150,62 @@ class UsuarioDAO {
             $rol
         );
 
-        $result = $stmt->execute();
+        $resultado = $stmt->execute();
 
         $stmt->close();
         $con->close();
 
-        return $result;
+        return $resultado;
     }
 
-    // Asignar rol a un usuario por email
+    // Asignar rol por email
     public static function setUserRoleByEmail($email, $role) {
         $con = DataBase::connect();
 
-        $stmt = $con->prepare(
-            "UPDATE usuarios SET rol = ? WHERE email = ?"
-        );
+        $sql = "UPDATE usuarios SET rol = ? WHERE email = ?";
 
+        $stmt = $con->prepare($sql);
         $stmt->bind_param('ss', $role, $email);
-        $result = $stmt->execute();
+        $resultado = $stmt->execute();
 
         $stmt->close();
         $con->close();
 
-        return $result;
+        return $resultado;
     }
 
     // Actualizar usuario
     public static function updateUsuario($id, $nombre, $email, $rol) {
         $con = DataBase::connect();
 
-        $stmt = $con->prepare(
-            "UPDATE usuarios
-             SET nombre = ?, email = ?, rol = ?
-             WHERE id = ?"
-        );
+        $sql = "UPDATE usuarios
+                SET nombre = ?, email = ?, rol = ?
+                WHERE id = ?";
 
+        $stmt = $con->prepare($sql);
         $stmt->bind_param('sssi', $nombre, $email, $rol, $id);
-        $result = $stmt->execute();
+        $resultado = $stmt->execute();
 
         $stmt->close();
         $con->close();
 
-        return $result;
+        return $resultado;
     }
 
     // Eliminar usuario
     public static function deleteUsuario($id) {
         $con = DataBase::connect();
 
-        $stmt = $con->prepare(
-            "DELETE FROM usuarios WHERE id = ?"
-        );
+        $sql = "DELETE FROM usuarios WHERE id = ?";
 
+        $stmt = $con->prepare($sql);
         $stmt->bind_param('i', $id);
-        $result = $stmt->execute();
+        $resultado = $stmt->execute();
 
         $stmt->close();
         $con->close();
 
-        return $result;
+        return $resultado;
     }
 }
 
