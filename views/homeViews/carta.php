@@ -4,6 +4,11 @@
 if (!isset($listaproductos) || !is_array($listaproductos)) {
     $listaproductos = [];
 }
+
+// Iniciamos la sesión si todavía no está iniciada.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 
 <div class="container py-5">
@@ -27,9 +32,14 @@ if (!isset($listaproductos) || !is_array($listaproductos)) {
     <!-- MENSAJE DE ÉXITO -->
     <?php if (isset($_SESSION['success'])): ?>
         <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm mb-4">
+
             <i class="fas fa-check-circle me-2"></i>
 
-            <?= htmlspecialchars($_SESSION['success'], ENT_QUOTES, 'UTF-8'); ?>
+            <?= htmlspecialchars(
+                $_SESSION['success'],
+                ENT_QUOTES,
+                'UTF-8'
+            ); ?>
 
             <?php unset($_SESSION['success']); ?>
 
@@ -38,6 +48,30 @@ if (!isset($listaproductos) || !is_array($listaproductos)) {
                 class="btn-close"
                 data-bs-dismiss="alert">
             </button>
+
+        </div>
+    <?php endif; ?>
+
+    <!-- MENSAJE DE ERROR -->
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm mb-4">
+
+            <i class="fas fa-exclamation-circle me-2"></i>
+
+            <?= htmlspecialchars(
+                $_SESSION['error'],
+                ENT_QUOTES,
+                'UTF-8'
+            ); ?>
+
+            <?php unset($_SESSION['error']); ?>
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+            </button>
+
         </div>
     <?php endif; ?>
 
@@ -77,6 +111,7 @@ if (!isset($listaproductos) || !is_array($listaproductos)) {
                 '.'
             );
 
+            // Ruta de la imagen.
             $imagen = $producto->getImagen();
 
             if (!empty($imagen)) {
@@ -88,6 +123,18 @@ if (!isset($listaproductos) || !is_array($listaproductos)) {
             } else {
                 $rutaImagen = url . 'Imagenes/default.png';
             }
+
+            $rutaImagenSegura = htmlspecialchars(
+                $rutaImagen,
+                ENT_QUOTES,
+                'UTF-8'
+            );
+
+            $imagenPorDefecto = htmlspecialchars(
+                url . 'Imagenes/default.png',
+                ENT_QUOTES,
+                'UTF-8'
+            );
         ?>
 
             <div class="col d-flex">
@@ -100,10 +147,10 @@ if (!isset($listaproductos) || !is_array($listaproductos)) {
                         style="height:200px;">
 
                         <img
-                            src="<?= htmlspecialchars($rutaImagen, ENT_QUOTES, 'UTF-8') ?>"
+                            src="<?= $rutaImagenSegura ?>"
                             alt="<?= $nombre ?>"
                             class="w-100 h-100 producto-imagen"
-                            onerror="this.onerror=null;this.src='<?= htmlspecialchars(url . 'Imagenes/default.png', ENT_QUOTES, 'UTF-8') ?>'">
+                            onerror="this.onerror=null;this.src='<?= $imagenPorDefecto ?>'">
 
                         <div
                             class="position-absolute bottom-0 start-0 bg-dark text-warning fw-bold px-3 py-2"
@@ -125,8 +172,10 @@ if (!isset($listaproductos) || !is_array($listaproductos)) {
                             <?= $descripcion ?>
                         </p>
 
-                        <div class="mt-auto">
+                        <!-- BOTONES -->
+                        <div class="mt-auto d-flex flex-column gap-2">
 
+                            <!-- PERSONALIZAR PRODUCTO -->
                             <a
                                 href="<?= url ?>?controller=producto&action=personalizar&id=<?= $id ?>"
                                 class="btn btn-warning fw-bold w-100">
@@ -135,6 +184,32 @@ if (!isset($listaproductos) || !is_array($listaproductos)) {
                                 Personalizar producto
 
                             </a>
+
+                            <!-- AÑADIR DIRECTAMENTE AL CARRITO -->
+                            <form
+                                action="<?= url ?>?controller=producto&action=agregarCarrito"
+                                method="POST">
+
+                                <input
+                                    type="hidden"
+                                    name="producto_id"
+                                    value="<?= $id ?>">
+
+                                <input
+                                    type="hidden"
+                                    name="modo"
+                                    value="directo">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-success fw-bold w-100">
+
+                                    <i class="fas fa-cart-plus me-2"></i>
+                                    Añadir al carrito
+
+                                </button>
+
+                            </form>
 
                         </div>
 
@@ -151,6 +226,7 @@ if (!isset($listaproductos) || !is_array($listaproductos)) {
     <?php if (!$hayProductos): ?>
 
         <div class="text-center py-5">
+
             <h4 class="fw-bold text-muted">
                 No hay productos disponibles.
             </h4>
@@ -158,6 +234,7 @@ if (!isset($listaproductos) || !is_array($listaproductos)) {
             <p class="text-muted">
                 Vuelve a consultar nuestra carta más adelante.
             </p>
+
         </div>
 
     <?php endif; ?>
@@ -191,5 +268,9 @@ if (!isset($listaproductos) || !is_array($listaproductos)) {
 
     .btn-warning:hover {
         background: #e5ac00;
+    }
+
+    .btn-success {
+        border: none;
     }
 </style>
