@@ -1,5 +1,4 @@
 
-
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -12,12 +11,15 @@ if (session_status() === PHP_SESSION_NONE) {
 
         <!-- Logo -->
         <a class="navbar-brand fw-bold font-monospace text-warning fs-3"
-           href="?controller=home&action=index">
+           href="<?= url ?>?controller=home&action=index">
+
             <span class="text-white">LENAULT</span>
+
         </a>
 
         <!-- Botón responsive -->
-        <button class="navbar-toggler" type="button"
+        <button class="navbar-toggler"
+                type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#navbarNav"
                 aria-controls="navbarNav"
@@ -25,6 +27,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 aria-label="Toggle navigation">
 
             <span class="navbar-toggler-icon"></span>
+
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -34,26 +37,27 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <li class="nav-item">
                     <a class="nav-link active"
-                       href="?controller=home&action=index">
+                       href="<?= url ?>?controller=home&action=index">
                         Home
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="?controller=carta&action=index">
+                       href="<?= url ?>?controller=carta&action=index">
                         Carta
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="?controller=home&action=aboutus">
+                       href="<?= url ?>?controller=home&action=aboutus">
                         Quiénes Somos
                     </a>
                 </li>
 
             </ul>
+
 
             <!-- Menú derecho -->
             <ul class="navbar-nav ms-auto align-items-center">
@@ -62,7 +66,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li class="nav-item me-3">
 
                     <a class="nav-link btn btn-outline-warning px-3 py-1 position-relative text-warning border-warning"
-                       href="?controller=producto&action=carrito">
+                       href="<?= url ?>?controller=carrito&action=index">
 
                         <i class="fas fa-shopping-cart me-1"></i>
                         Carrito
@@ -70,9 +74,16 @@ if (session_status() === PHP_SESSION_NONE) {
                         <?php
                         $cart_count = 0;
 
-                        if (isset($_SESSION['carrito']) && !empty($_SESSION['carrito'])) {
+                        if (
+                            isset($_SESSION['carrito']) &&
+                            !empty($_SESSION['carrito'])
+                        ) {
                             foreach ($_SESSION['carrito'] as $item) {
-                                $cart_count += $item['cantidad'];
+
+                                $cart_count += (int) (
+                                    $item['cantidad'] ?? 0
+                                );
+
                             }
                         }
 
@@ -80,13 +91,17 @@ if (session_status() === PHP_SESSION_NONE) {
                         ?>
 
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
                                 <?= $cart_count; ?>
+
                             </span>
 
                         <?php endif; ?>
 
                     </a>
+
                 </li>
+
 
                 <!-- Usuario / My Lenault -->
                 <?php if (isset($_SESSION['usuario_id'])): ?>
@@ -94,22 +109,27 @@ if (session_status() === PHP_SESSION_NONE) {
                     <li class="nav-item">
 
                         <a class="nav-link btn btn-warning text-dark px-3 fw-bold border-0"
-                           href="?controller=usuario&action=panel"
+                           href="<?= url ?>?controller=usuario&action=panel"
                            style="background: #ffc107;">
 
                             <i class="fas fa-user-circle me-1"></i>
 
-                            <?= htmlspecialchars($_SESSION['usuario_nombre']); ?>
+                            <?= htmlspecialchars(
+                                $_SESSION['usuario_nombre'] ?? 'Usuario',
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ); ?>
 
                         </a>
 
                     </li>
 
+
                     <!-- Cerrar sesión -->
                     <li class="nav-item">
 
                         <a class="nav-link text-white"
-                           href="?controller=usuario&action=logout">
+                           href="<?= url ?>?controller=usuario&action=logout">
 
                             <i class="fas fa-sign-out-alt me-1"></i>
                             Cerrar sesión
@@ -120,11 +140,12 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <?php else: ?>
 
+
                     <!-- Usuario sin iniciar sesión -->
                     <li class="nav-item">
 
                         <a class="nav-link btn btn-warning text-dark px-3 fw-bold border-0"
-                           href="?controller=usuario&action=login"
+                           href="<?= url ?>?controller=usuario&action=login"
                            style="background: #ffc107;">
 
                             <i class="fas fa-user me-1"></i>
@@ -141,6 +162,7 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </div>
 </nav>
+
 
 <!-- Font Awesome -->
 <link rel="stylesheet"
