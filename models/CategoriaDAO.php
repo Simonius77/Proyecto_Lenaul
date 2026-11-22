@@ -31,6 +31,8 @@ class CategoriaDAO
         return $categorias;
     }
 
+    
+
     /**
      * Obtener una categoría por su ID.
      */
@@ -47,7 +49,7 @@ class CategoriaDAO
         $stmt->execute();
 
         $resultado = $stmt->get_result();
-        $fila = $resultado->fetch_object();
+        $fila = $resultado->fetch_assoc();
 
         $stmt->close();
         $con->close();
@@ -56,7 +58,7 @@ class CategoriaDAO
             return null;
         }
 
-        return self::mapearCategoria($fila);
+        return self::mapearCategoria((object) $fila);
     }
 
     /**

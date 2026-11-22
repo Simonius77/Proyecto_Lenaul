@@ -10,6 +10,9 @@ URL de las vistas
 URL para cargar la home
 http://localhost/Proyecto_Lenaul/?controller=Home&action=Home
 
+URL para cargar la vista de Admin
+http://localhost/Proyecto_Lenaul/?controller=admin
+
 
 ## Estructura
 

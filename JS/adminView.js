@@ -4,10 +4,39 @@ class administrarVistas{
         this.enlaces = null;
         this.secciones = null;
         this.vista = null;
+        this.productos = r;
+        this.categorias = null;
+        this.platos = null;
+        this.usuarios = null;
 
     }
 
     inicializar(){
+        //enlaza con la api 
+        fetch("http://localhost/Proyecto_Lenaul/?controller=producto&action=api")
+        //optiene transforma los datos a json
+        .then(respuesta => respuesta.json())
+        .then(r =>  {
+            this.productos = r;
+            const tablaproductos = document.querySelector("#productos");
+            this.productos.forEach(p => {
+                const tr = document.createElement("tr");
+                const td1 = document.createElement("td");
+                td1.textContent = p.id;
+                tr.append(td1);
+                const td2 = document.createElement("td");
+                td2.textContent = p.nombre;
+                tr.append(td2);
+                const td3 = document.createElement("td");
+                td3.textContent = p.precio;
+                tr.append(td3);
+                
+                
+                tablaproductos.append(tr);
+            })     
+                
+        })
+        
         this.enlaces = document.querySelectorAll("a");
         this.enlaces = document.querySelectorAll("section");
 
@@ -49,3 +78,27 @@ class administrarVistas{
 let admin = new administrarVistas();
 //llamamos a la funcion
 admin.inicializar();
+
+class platos {
+    constructor(){
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
+
+    }
+}
+
+const formularioEliminarProducto = document.querySelector("#formularioEliminarProducto");
+formularioEliminarProducto.addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.log(e.target[0].value);
+    fetch("http://localhost/Proyecto_Lenaul/?controller=producto&action=api",{
+        method: "DELETE",
+        body: JSON.stringify(id)
+        
+})
+
+    
+        
+
+})

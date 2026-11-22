@@ -1,6 +1,6 @@
 
 <?php
-
+//llamamos a los modelos que vamos a usar
 require_once __DIR__ . '/../models/ProductoDAO.php';
 require_once __DIR__ . '/../models/IngredienteDAO.php';
 require_once __DIR__ . '/../models/Producto.php';
@@ -8,13 +8,30 @@ require_once __DIR__ . '/../models/Plato.php';
 require_once __DIR__ . '/../models/Bebida.php';
 require_once __DIR__ . '/../models/Postre.php';
 
-class productoController
-{
-    /**
-     * Muestra la pantalla de personalización.
-     */
-    public function personalizar()
-    {
+class productoController {
+
+//ejemplo de api clase magistral 18/11/26 David Navarro
+//funcion API
+    public function api() {
+        //obtenemos el metodo de la peticion
+        $metodo = $_SERVER['REQUEST_METHOD'];
+        //si es GET y la funcion es todos devolvemos todos los productos
+        if ($metodo == "GET") {
+            if($_GET['funcion'] == "todos") {
+                //devuelve toddos los productos
+                $productos = ProductoDAO::getAllJson();     
+            }
+        }else if($metodo == "DELETE") {
+            //si es DELETE y la funcion es eliminar, eliminamos el producto
+            //eliminar producto
+           $datos = json_decode(file_get_contents("php://input"), true);
+        }
+    }
+
+    
+    // Muestra la pantalla de personalización.
+
+    public function personalizar() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -46,12 +63,11 @@ class productoController
         require_once __DIR__ . '/../views/productos/personalizar.php';
     }
 
-    /**
-     * Añade un producto al carrito.
-     *
-     * Los platos pueden personalizarse.
-     * En modo directo conservan todos sus ingredientes originales.
-     * Las bebidas y los postres se añaden directamente.
+    /*
+    Añade un producto al carrito.
+    Los platos pueden personalizarse.
+    En modo directo conservan todos sus ingredientes originales.
+    Las bebidas y los postres se añaden directamente.
      */
     public function agregarCarrito()
     {
@@ -173,7 +189,7 @@ class productoController
 
             $extras = array_unique($extras);
 
-            // Máximo de cuatro extras.
+            // Maximo de cuatro extras.
             $extras = array_slice($extras, 0, 4);
 
             // Obtener ingredientes activos disponibles.
@@ -229,4 +245,6 @@ class productoController
         header('Location: ' . url . '?controller=carta&action=index');
         exit;
     }
+
+
 }

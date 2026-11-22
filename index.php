@@ -3,8 +3,7 @@ session_start();
 
 include_once("config/parameters.php");
 
-function showError($code, $message)
-{
+function showError($code, $message) {
     http_response_code($code);
 
     $errorCode = $code;
@@ -42,7 +41,7 @@ if (!class_exists($nombre_controller)) {
 // Crear el controlador.
 $controller = new $nombre_controller();
 
-// Obtener la acción.
+// Obtener la acción por defecto.
 $action = default_action;
 
 if (isset($_GET['action']) && $_GET['action'] !== '') {
@@ -57,5 +56,18 @@ if (!is_callable([$controller, $action])) {
     );
 }
 
+
+//MasterClass del 18/11/26 David Navarro
+
+//cuando reciba un action tipo api los datos seran tipo jason
+//colocar isset para comprobar que la variable action esta definida y que sea igual a api, si no da error 
+if(isset($_GET["action"]) && $_GET["action"] === "api") {
+    //permitira peticiones de cualquier origen
+    header("Access-Control-Allow-Origin: *");
+    header("Content-Type: application/json; charset=UTF-8");
+}
+
 // Ejecutar la acción.
 $controller->$action();
+
+

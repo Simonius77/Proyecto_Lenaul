@@ -35,6 +35,30 @@ class ProductoDAO
         return $productos;
     }
 
+    //Para la api MasterClass del 18/11/26 David Navarro
+    //Copiamos la funcion getAll y la modificamos para que devuelva un array de productos en formato JSON
+    public static function getAllJson(): array
+    {
+        $con = DataBase::connect();
+
+        $sql = "SELECT p.*, c.nombre AS categoria_nombre
+                FROM productos p
+                INNER JOIN categorias c ON p.categoria_id = c.id
+                ORDER BY p.id DESC";
+
+        $resultado = $con->query($sql);
+
+        $productos = [];
+
+        while ($fila = $resultado->fetch_assoc()) {
+            $productos[] = self::mapearProducto((object) $fila);
+        }
+
+        $con->close();
+
+        return $productos;
+    }
+
     /**
      * Obtener un producto por su ID.
      */
