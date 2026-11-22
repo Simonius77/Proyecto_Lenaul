@@ -1,0 +1,304 @@
+
+/* =====================================
+   CONFIGURACIÓN GENERAL
+===================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f4f5f7;
+    color: #252525;
+    min-height: 100vh;
+}
+
+
+/* =====================================
+   CABECERA
+===================================== */
+
+header {
+    background-color: #202020;
+    color: white;
+    padding: 22px 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+}
+
+header h1 {
+    font-size: 25px;
+    letter-spacing: 2px;
+}
+
+header h1 span {
+    color: #ffc107;
+}
+
+header p {
+    color: #cccccc;
+    font-size: 14px;
+}
+
+
+/* =====================================
+   NAVEGACIÓN
+===================================== */
+
+nav {
+    background-color: #292929;
+    padding: 15px 35px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+nav a {
+    color: #dddddd;
+    text-decoration: none;
+    padding: 11px 18px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+nav a:hover {
+    background-color: #ffc107;
+    color: #202020;
+}
+
+nav a.active {
+    background-color: #ffc107;
+    color: #202020;
+}
+
+
+/* =====================================
+   CONTENEDOR PRINCIPAL
+===================================== */
+
+main {
+    width: 92%;
+    max-width: 1450px;
+    margin: 35px auto;
+}
+
+section {
+    background-color: white;
+    padding: 30px;
+    border-radius: 13px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+    animation: aparecer 0.25s ease;
+}
+
+section h2 {
+    font-size: 25px;
+    margin-bottom: 10px;
+    color: #222222;
+}
+
+section h2::after {
+    content: "";
+    display: block;
+    width: 55px;
+    height: 4px;
+    background-color: #ffc107;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+section p {
+    color: #777777;
+    margin-top: 15px;
+    line-height: 1.6;
+}
+
+
+/* =====================================
+   FORMULARIOS
+===================================== */
+
+form {
+    margin-top: 22px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+label {
+    font-weight: 600;
+    color: #444444;
+}
+
+input,
+select,
+textarea {
+    padding: 11px 14px;
+    border: 1px solid #dddddd;
+    border-radius: 7px;
+    font-size: 14px;
+    outline: none;
+    background-color: #ffffff;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 3px rgba(255,193,7,0.15);
+}
+
+
+/* =====================================
+   BOTONES
+===================================== */
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 11px 18px;
+    background-color: #ffc107;
+    color: #202020;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+button:hover {
+    background-color: #e0a800;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+
+/* =====================================
+   TABLA DE PRODUCTOS
+===================================== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #292929;
+    color: white;
+}
+
+th {
+    padding: 15px 12px;
+    text-align: left;
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+
+td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #eeeeee;
+    font-size: 14px;
+    color: #555555;
+}
+
+tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+    background-color: #fff9e6;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =====================================
+   ANIMACIONES
+===================================== */
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media (max-width: 768px) {
+
+    header {
+        padding: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    nav {
+        padding: 12px 15px;
+        gap: 5px;
+    }
+
+    nav a {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    main {
+        width: 95%;
+        margin: 20px auto;
+    }
+
+    section {
+        padding: 20px 15px;
+    }
+
+    section h2 {
+        font-size: 21px;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    form {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    input,
+    select,
+    textarea,
+    form button {
+        width: 100%;
+    }
+
+}

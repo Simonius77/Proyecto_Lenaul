@@ -10,23 +10,121 @@ require_once __DIR__ . '/../models/Postre.php';
 
 class productoController {
 
+//API
 //ejemplo de api clase magistral 18/11/26 David Navarro
 //funcion API
-    public function api() {
-        //obtenemos el metodo de la peticion
-        $metodo = $_SERVER['REQUEST_METHOD'];
-        //si es GET y la funcion es todos devolvemos todos los productos
-        if ($metodo == "GET") {
-            if($_GET['funcion'] == "todos") {
-                //devuelve toddos los productos
-                $productos = ProductoDAO::getAllJson();     
+    
+public function api()
+{
+    header("Content-Type: application/json; charset=UTF-8");
+
+    $metodo = $_SERVER['REQUEST_METHOD'];
+    $funcion = $_GET['funcion'] ?? '';
+
+    try {
+
+        // OBTENER TODOS LOS PRODUCTOS
+        if ($metodo === "GET" && $funcion === "todos") {
+
+            $productos = ProductoDAO::getAllJson();
+            $resultado = [];
+
+            foreach ($productos as $producto) {
+                $resultado[] = [
+                    'id' => $producto->getId(),
+                    'categoria_id' => $producto->getCategoriaId(),
+                    'nombre' => $producto->getNombre(),
+                    'descripcion' => $producto->getDescripcion(),
+                    'precio' => $producto->getPrecio(),
+                    'imagen' => $producto->getImagen(),
+                    'activo' => $producto->getActivo(),
+                    'tipo' => $producto->getTipo()
+                ];
             }
-        }else if($metodo == "DELETE") {
-            //si es DELETE y la funcion es eliminar, eliminamos el producto
-            //eliminar producto
-           $datos = json_decode(file_get_contents("php://input"), true);
+
+            echo json_encode([
+                'success' => true,
+                'productos' => $resultado
+            ]);
+
+            exit;
         }
+
+        // ELIMINAR UN PRODUCTO
+        if ($metodo === "DELETE" && $funcion === "eliminar") {
+
+            $datos = json_decode(file_get_contents("php://input"), true);
+
+            if (!isset($datos['id']) || !filter_var($datos['id'], FILTER_VALIDATE_INT) || $datos['id'] <= 0) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'mensaje' => 'ID de producto no válido'
+                ]);
+                exit;
+            }
+
+            // Comprueba aquí que el usuario tiene permisos de administrador.
+            if (!$this->esAdministrador()) {
+                http_response_code(403);
+                echo json_encode([
+                    'success' => false,
+                    'mensaje' => 'No tienes permisos para eliminar productos'
+                ]);
+                exit;
+            }
+
+            $id = (int) $datos['id'];
+            $producto = ProductoDAO::getById($id);
+
+            if (!$producto) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'mensaje' => 'El producto no existe'
+                ]);
+                exit;
+            }
+
+            $eliminado = ProductoDAO::delete($id);
+
+            echo json_encode([
+                'success' => $eliminado,
+                'mensaje' => $eliminado
+                    ? 'Producto eliminado correctamente'
+                    : 'No se pudo eliminar el producto'
+            ]);
+
+            exit;
+        }
+
+        // PETICIÓN NO RECONOCIDA
+        http_response_code(400);
+
+        echo json_encode([
+            'success' => false,
+            'mensaje' => 'Método o función no válida'
+        ]);
+
+        exit;
+
+    } catch (Throwable $e) {
+
+        http_response_code(500);
+
+        // El error detallado se registra en el servidor, no se muestra al usuario.
+        error_log($e->getMessage());
+
+        echo json_encode([
+            'success' => false,
+            'mensaje' => 'Se ha producido un error en el servidor'
+        ]);
+
+        exit;
     }
+}
+
+//FIN de la api clase magistral 18/11/26 David Navarro
 
     
     // Muestra la pantalla de personalización.

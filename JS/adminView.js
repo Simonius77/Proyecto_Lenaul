@@ -1,104 +1,211 @@
-class administrarVistas{
 
-    constructor(){
+class administrarVistas {
+
+    constructor() {
         this.enlaces = null;
         this.secciones = null;
-        this.vista = null;
-        this.productos = r;
+        this.vista = "inicio";
+        this.productos = [];
         this.categorias = null;
         this.platos = null;
         this.usuarios = null;
 
+        this.apiUrl = "http://localhost/Proyecto_Lenaul/?controller=producto&action=api";
     }
 
-    inicializar(){
-        //enlaza con la api 
-        fetch("http://localhost/Proyecto_Lenaul/?controller=producto&action=api")
-        //optiene transforma los datos a json
-        .then(respuesta => respuesta.json())
-        .then(r =>  {
-            this.productos = r;
-            const tablaproductos = document.querySelector("#productos");
-            this.productos.forEach(p => {
-                const tr = document.createElement("tr");
-                const td1 = document.createElement("td");
-                td1.textContent = p.id;
-                tr.append(td1);
-                const td2 = document.createElement("td");
-                td2.textContent = p.nombre;
-                tr.append(td2);
-                const td3 = document.createElement("td");
-                td3.textContent = p.precio;
-                tr.append(td3);
-                
-                
-                tablaproductos.append(tr);
-            })     
-                
-        })
-        
-        this.enlaces = document.querySelectorAll("a");
-        this.enlaces = document.querySelectorAll("section");
+    inicializar() {
 
-        this.enlaces.forEach(e => {
-            console.log(e.dataset.view);
-            
+        // Seleccionamos los enlaces y las secciones
+        this.enlaces = document.querySelectorAll("a[data-view]");
+        this.secciones = document.querySelectorAll("section[data-view]");
 
-            e.addEventListener("click", ()=>{
-                console.log(e.dataset.view);
-                //vista que queremos mostrar
-                this.vista = e.dataset.view;
-                //recorremos las secciones para mostrar u ocultar dependiendo de this vista
-                this.secciones.foreach(s => {
-                    //comprueba que vista esta seleccionada y la muestra y si no
-                    //esta seleccionada la oculta utilizando el hidden.
-                    if(s.dataset.view == this.vista){
-                        s.hidden = false;
-                    }else{
-                        s.hidden = true;
-                    }
+        // Eventos para cambiar de vista
+        this.enlaces.forEach(enlace => {
 
+            enlace.addEventListener("click", (e) => {
 
-                    console.log(e.dataset.view);
+                e.preventDefault();
 
+                this.vista = enlace.dataset.view;
 
-                });
+                this.mostrarVista();
 
             });
-            
+
         });
 
+        // Mostramos la vista inicial
+        this.mostrarVista();
 
+        // Cargamos los productos
+        this.obtenerProductos();
+    }
+
+
+    // Mostrar y ocultar secciones
+    mostrarVista() {
+
+        this.secciones.forEach(seccion => {
+
+            if (seccion.dataset.view === this.vista) {
+                seccion.hidden = false;
+            } else {
+                seccion.hidden = true;
+            }
+
+        });
 
     }
 
 
+    // Obtener productos desde la API
+    obtenerProductos() {
+
+        fetch(`${this.apiUrl}&funcion=todos`)
+
+            .then(respuesta => {
+
+                if (!respuesta.ok) {
+                    throw new Error("Error al conectar con la API");
+                }
+
+                return respuesta.json();
+
+            })
+
+            .then(datos => {
+
+                if (!datos.success) {
+                    throw new Error(datos.mensaje || "No se pudieron cargar los productos");
+                }
+
+                this.productos = datos.productos;
+
+                this.mostrarProductos();
+
+            })
+
+            .catch(error => {
+
+                console.error("Error:", error);
+
+            });
+
+    }
+
+
+    // Mostrar productos en la tabla
+    mostrarProductos() {
+
+        const tablaProductos = document.querySelector("#tablaProductos");
+
+        if (!tablaProductos) return;
+
+        tablaProductos.innerHTML = "";
+
+        this.productos.forEach(p => {
+
+            const tr = document.createElement("tr");
+
+            const valores = [
+                p.id,
+                p.categoria_id,
+                p.nombre,
+                p.descripcion,
+                p.precio,
+                p.imagen,
+                p.activo ? "Sí" : "No",
+                p.tipo
+            ];
+
+            valores.forEach(valor => {
+
+                const td = document.createElement("td");
+
+                td.textContent = valor ?? "";
+
+                tr.appendChild(td);
+
+            });
+
+            tablaProductos.appendChild(tr);
+
+        });
+
+    }
+
+
+    // Eliminar producto
+    eliminarProducto(e) {
+
+        e.preventDefault();
+
+        const id = Number(document.querySelector("#productoId").value);
+
+        if (!Number.isInteger(id) || id <= 0) {
+            alert("Introduce un ID válido");
+            return;
+        }
+
+        if (!confirm("¿Seguro que quieres eliminar este producto?")) {
+            return;
+        }
+
+        fetch(`${this.apiUrl}&funcion=eliminar`, {
+
+            method: "DELETE",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({ id: id })
+
+        })
+
+        .then(respuesta => respuesta.json())
+
+        .then(datos => {
+
+            if (!datos.success) {
+                throw new Error(datos.mensaje || "No se pudo eliminar el producto");
+            }
+
+            alert(datos.mensaje);
+
+            document.querySelector("#productoId").value = "";
+
+            this.obtenerProductos();
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+            alert(error.message);
+
+        });
+
+    }
+
 }
-//creamos el objeto
-let admin = new administrarVistas();
-//llamamos a la funcion
+
+
+// Crear objeto e inicializar
+const admin = new administrarVistas();
+
 admin.inicializar();
 
-class platos {
-    constructor(){
-        this.id = id;
-        this.nombre = nombre;
-        this.precio = precio;
 
-    }
-}
-
+// Formulario de eliminacion
 const formularioEliminarProducto = document.querySelector("#formularioEliminarProducto");
-formularioEliminarProducto.addEventListener("submit", (e) => {
-    e.preventDefault();
-    console.log(e.target[0].value);
-    fetch("http://localhost/Proyecto_Lenaul/?controller=producto&action=api",{
-        method: "DELETE",
-        body: JSON.stringify(id)
-        
-})
 
-    
-        
+if (formularioEliminarProducto) {
 
-})
+    formularioEliminarProducto.addEventListener("submit", (e) => {
+
+        admin.eliminarProducto(e);
+
+    });
+
+}

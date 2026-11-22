@@ -3,7 +3,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
+// Inicializamos las variables si no estan definidas
 $itemsCarrito = $itemsCarrito ?? [];
 $subtotalProductos = $subtotalProductos ?? 0;
 $totalUnidades = $totalUnidades ?? 0;

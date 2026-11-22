@@ -5,9 +5,9 @@ require_once __DIR__ . '/../models/IngredienteDAO.php';
 
 class carritoController
 {
-    /**
-     * Mostrar el carrito y calcular los importes.
-     */
+    
+        // Mostrar el carrito y calcular los importes.
+    
     public function index()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -108,9 +108,9 @@ class carritoController
     }
 
 
-    /**
-     * Actualizar la cantidad de un producto.
-     */
+    
+        // Actualizar la cantidad de un producto.
+     
     public function actualizarCantidad()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -148,9 +148,9 @@ class carritoController
     }
 
 
-    /**
-     * Eliminar un producto del carrito.
-     */
+    
+        // Eliminar un producto del carrito.
+     
     public function eliminar()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -182,9 +182,9 @@ class carritoController
     }
 
 
-    /**
-     * Vaciar completamente el carrito.
-     */
+    
+        // Vaciar completamente el carrito.
+     
     public function vaciar()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -202,9 +202,9 @@ class carritoController
     }
 
 
-    /**
-     * Aplicar un código de descuento.
-     */
+    
+        // Aplicar un código de descuento.
+     
     public function aplicarDescuento()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -258,9 +258,9 @@ class carritoController
     }
 
 
-    /**
-     * Quitar el descuento aplicado.
-     */
+    
+        // Quitar el descuento aplicado.
+     
     public function quitarDescuento()
     {
         if (session_status() === PHP_SESSION_NONE) {

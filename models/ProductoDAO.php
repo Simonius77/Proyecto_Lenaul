@@ -35,8 +35,9 @@ class ProductoDAO
         return $productos;
     }
 
-    //Para la api MasterClass del 18/11/26 David Navarro
-    //Copiamos la funcion getAll y la modificamos para que devuelva un array de productos en formato JSON
+    //Para la api MasterClass del 18/11/26 David Navarro.
+    //Copiamos la funcion getAll y la modificamos para que devuelva un array de productos en 
+    //formato JSON.
     public static function getAllJson(): array
     {
         $con = DataBase::connect();
