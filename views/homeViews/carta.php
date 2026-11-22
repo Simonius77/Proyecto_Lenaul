@@ -142,24 +142,21 @@ if (session_status() === PHP_SESSION_NONE) {
                 <div class="card producto-card w-100 shadow-sm border-0 rounded-4 overflow-hidden bg-white">
 
                     <!-- IMAGEN Y PRECIO -->
-                    <div
-                        class="position-relative overflow-hidden"
-                        style="height:200px;">
+                    
+                    <div class="contenedor-imagen-producto">
 
                         <img
                             src="<?= $rutaImagenSegura ?>"
                             alt="<?= $nombre ?>"
-                            class="w-100 h-100 producto-imagen"
+                            class="producto-imagen"
                             onerror="this.onerror=null;this.src='<?= $imagenPorDefecto ?>'">
 
-                        <div
-                            class="position-absolute bottom-0 start-0 bg-dark text-warning fw-bold px-3 py-2"
-                            style="background:rgba(0,0,0,.75)!important;">
-
+                        <div class="precio-producto">
                             <?= $precio ?> €
-
                         </div>
+
                     </div>
+
 
                     <!-- INFORMACIÓN DEL PRODUCTO -->
                     <div class="card-body p-4 d-flex flex-column">
@@ -242,25 +239,54 @@ if (session_status() === PHP_SESSION_NONE) {
 </div>
 
 <style>
+    
+    /* Tarjetas */
     .producto-card {
         transition: transform .3s, box-shadow .3s;
     }
 
+    /* Efecto al pasar el ratón */
     .producto-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0,0,0,.1) !important;
     }
 
+    /* Contenedor de imagen */
+    .contenedor-imagen-producto {
+        width: 100%;
+        height: 220px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #f8f8f8;
+    }
+
+    /* Imagen completa */
     .producto-imagen {
-        height: 200px;
-        object-fit: cover;
-        transition: transform .5s;
+        display: block;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain !important;
+        object-position: center;
+        transform: none !important;
+        transition: none;
     }
 
-    .producto-card:hover .producto-imagen {
-        transform: scale(1.05);
+    /* Precio */
+    .precio-producto {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: rgba(0,0,0,.75);
+        color: #ffc107;
+        font-weight: bold;
+        padding: 8px 16px;
     }
 
+    /* Botones */
     .btn-warning {
         background: #ffc107;
         border: none;
@@ -273,4 +299,5 @@ if (session_status() === PHP_SESSION_NONE) {
     .btn-success {
         border: none;
     }
+
 </style>

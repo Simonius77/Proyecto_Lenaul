@@ -1,153 +1,162 @@
-/* HEADER */
+
+/* =====================================
+   HEADER
+===================================== */
+
 .header {
-  background-image: url("../Imagenes/banner_home.webp");
-  background-size: cover;       /* La imagen cubre todo el header */
-  background-position: center; /* Centrada */
-  height: 300px;               /* Ajusta la altura */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* color: white; */             /* Texto visible sobre el fondo */
+    background-image: url("../Imagenes/banner_home.webp");
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* NAV */
+/* =====================================
+   NAV
+===================================== */
+
 nav ul {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
 .nav-derecho {
-  display: flex;
-  gap: 20px;
+    display: flex;
+    gap: 20px;
 }
 
 .nav-izquierdo {
-  display: flex;
-  gap: 20px;
+    display: flex;
+    gap: 20px;
 }
 
-/* IMAGEN DE PRODUCTO */
+/* =====================================
+   IMAGEN DE PRODUCTO GENERAL
+===================================== */
+
 .imagen-producto {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 12px;
-  display: block;
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 12px;
+    display: block;
+    background-color: #fff;
 }
 
-/* --- NUEVOS ESTILOS PARA LA SECCIÓN DE MENÚ / PRODUCTOS --- */
+/* =====================================
+   SECCIÓN DE MENÚ / PRODUCTOS
+===================================== */
 
-/* Contenedor general de la categoría (PRIMEROS, SEGUNDOS, POSTRES) */
 .seccion-menu {
-  margin-bottom: 40px;
+    margin-bottom: 40px;
 }
 
 .seccion-menu h2 {
-  text-align: center;
-  font-family: sans-serif;
-  letter-spacing: 2px;
-  margin-bottom: 25px;
-  color: #222;
+    text-align: center;
+    font-family: sans-serif;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+    color: #222;
 }
 
-/* Cuadrícula de productos (3 columnas como en la imagen) */
+/* Cuadrícula de productos */
+
 .grid-productos {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-/* Tarjeta individual de producto */
+/* Tarjeta individual */
+
 .tarjeta-producto {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-/* Controles de cantidad (+ / - / número) */
+/* Controles de cantidad */
+
 .control-cantidad {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  background-color: #fff;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    background-color: #fff;
 }
 
 .control-cantidad button {
-  background-color: #ffcc00; /* Amarillo característico */
-  border: none;
-  padding: 8px 15px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 16px;
+    background-color: #ffcc00;
+    border: none;
+    padding: 8px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 .control-cantidad button:hover {
-  background-color: #e6b800;
+    background-color: #e6b800;
 }
 
 .control-cantidad input {
-  flex: 1;
-  border: none;
-  text-align: center;
-  font-size: 16px;
-  outline: none;
-  background: transparent;
+    flex: 1;
+    border: none;
+    text-align: center;
+    font-size: 16px;
+    outline: none;
+    background: transparent;
 }
 
-/* Contenedor inferior: Precio y Botón Agregar */
+/* Precio y botón agregar */
+
 .info-agregar {
-  display: flex;
-  gap: 5px;
+    display: flex;
+    gap: 5px;
 }
 
 .precio {
-  background-color: #111;
-  color: #fff;
-  padding: 10px 12px;
-  font-weight: bold;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 70px;
+    background-color: #111;
+    color: #fff;
+    padding: 10px 12px;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
 }
 
 .btn-agregar {
-  flex: 1;
-  background-color: #4a77cc; /* Tono azulado de los botones */
-  color: #fff;
-  border: none;
-  padding: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  text-align: center;
+    flex: 1;
+    background-color: #4a77cc;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
 }
 
 .btn-agregar:hover {
-  background-color: #3b62b0;
+    background-color: #3b62b0;
 }
-
-/* Responsivo para pantallas pequeñas */
-@media (max-width: 768px) {
-  .grid-productos {
-    grid-template-columns: 1fr;
-  }
-}
-
 
 /* =====================================
    CARTA LENAULT
 ===================================== */
 
 /* Contenedor de productos */
+
 .carta-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -156,15 +165,19 @@ nav ul {
 }
 
 /* Columnas */
+
 .carta-grid > .col {
     width: auto;
     max-width: none;
     padding: 0;
+    min-width: 0;
 }
 
 /* Tarjetas */
+
 .producto-card {
     width: 100%;
+    height: 100%;
     border: 1px solid #eee !important;
     border-radius: 14px !important;
     overflow: hidden;
@@ -174,29 +187,30 @@ nav ul {
 }
 
 .producto-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-4px);
     box-shadow: 0 9px 22px rgba(0, 0, 0, 0.14) !important;
 }
 
-/* Imagen del producto */
+/* Imagen de la carta */
+
 .producto-imagen {
     width: 100%;
     height: 220px;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
     display: block;
-    transition: transform 0.4s ease;
-}
-
-.producto-card:hover .producto-imagen {
-    transform: scale(1.05);
+    background-color: #fff;
 }
 
 /* Contenedor de imagen */
+
 .producto-card .position-relative {
     overflow: hidden;
+    background-color: #fff;
 }
 
 /* Nombre del producto */
+
 .producto-card h5 {
     font-size: 1.2rem;
     font-weight: 700;
@@ -205,6 +219,7 @@ nav ul {
 }
 
 /* Descripción */
+
 .producto-card .card-body > p {
     color: #777;
     font-size: 0.95rem;
@@ -212,12 +227,14 @@ nav ul {
 }
 
 /* Precio sobre la imagen */
+
 .producto-card .position-absolute {
     font-size: 1rem;
     border-radius: 0 8px 0 0;
 }
 
 /* Cantidad */
+
 .cantidad-control {
     width: 38px;
     height: 38px;
@@ -230,6 +247,7 @@ nav ul {
 }
 
 /* Botones de la carta */
+
 .producto-card .btn-warning {
     background-color: #d6a83e;
     border: none;
@@ -244,7 +262,10 @@ nav ul {
     color: #fff;
 }
 
-/* Personalización */
+/* =====================================
+   PERSONALIZACIÓN
+===================================== */
+
 .ingrediente-fila {
     border-bottom: 1px solid #e8e8e8;
     padding: 12px 0;
@@ -264,7 +285,10 @@ nav ul {
     color: #198754;
 }
 
-/* Resumen del pedido */
+/* =====================================
+   RESUMEN DEL PEDIDO
+===================================== */
+
 #resumenPedido {
     margin-top: 15px;
 }
@@ -274,22 +298,57 @@ nav ul {
     border-bottom: 1px solid #eee;
 }
 
-/* Adaptación a tablets */
+/* =====================================
+   RESPONSIVE - TABLETS
+===================================== */
+
 @media (max-width: 991px) {
     .carta-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 20px;
     }
+
+    .grid-productos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
-/* Adaptación a móviles */
+/* =====================================
+   RESPONSIVE - MÓVILES
+===================================== */
+
 @media (max-width: 576px) {
     .carta-grid {
         grid-template-columns: 1fr;
         gap: 20px;
     }
 
-    .producto-imagen {
-        height: 230px;
+    .grid-productos {
+        grid-template-columns: 1fr;
     }
+
+    .producto-imagen {
+        height: 220px;
+    }
+
+    .imagen-producto {
+        height: 180px;
+    }
+
+    .nav-derecho,
+    .nav-izquierdo {
+        gap: 10px;
+    }
+}
+
+/* PRUEBA DE IMÁGENES DE LA CARTA */
+.carta-grid .producto-card img,
+.producto-card img {
+    width: 100% !important;
+    height: 180px !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    transform: none !important;
+    background: #f5f5f5;
 }
