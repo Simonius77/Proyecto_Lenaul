@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -8,9 +9,9 @@ function showError($code, $message) {
 
     $errorCode = $code;
     $errorMessage = $message;
-    $view = "views/error.php";
+    $view = "error.php";
 
-    include_once "views/main.php";
+    require "views/main.php";
     exit;
 }
 
@@ -24,7 +25,7 @@ if (!isset($_GET['controller']) || $_GET['controller'] === '') {
 $controllerParam = strtolower(trim($_GET['controller']));
 
 $nombre_controller = $controllerParam . "Controller";
-$controllerFile = "controllers/" . $nombre_controller . ".php";
+$controllerFile = __DIR__ . "/controllers/" . $nombre_controller . ".php";
 
 // Comprobar que existe el archivo.
 if (!file_exists($controllerFile)) {
@@ -56,18 +57,11 @@ if (!is_callable([$controller, $action])) {
     );
 }
 
-
-//MasterClass del 18/11/26 David Navarro
-
-//cuando reciba un action tipo api los datos seran tipo jason
-//colocar isset para comprobar que la variable action esta definida y que sea igual a api, si no da error 
-if(isset($_GET["action"]) && $_GET["action"] === "api") {
-    //permitira peticiones de cualquier origen
+// Configurar respuestas JSON para las API.
+if (isset($_GET["action"]) && $_GET["action"] === "api") {
     header("Access-Control-Allow-Origin: *");
     header("Content-Type: application/json; charset=UTF-8");
 }
 
 // Ejecutar la acción.
 $controller->$action();
-
-

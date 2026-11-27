@@ -53,3 +53,9 @@ Tabla Categorias
 6 Volver a la rama desarrollo 
     git checkout desarrollo
 
+
+## sesion storage y local storage
+ se necesita utilizar como minimo 3 veces 
+ El sesion storage : guarda mientras este la sesion activa
+ El local storage : guarda las preferencias en local y no se borra al cerrar la web.
+

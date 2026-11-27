@@ -561,19 +561,27 @@ $totalFinal = $totalFinal ?? 0;
 
 
                         <!-- FINALIZAR PEDIDO -->
-                        <button
-                            type="button"
-                            class="btn btn-warning fw-bold w-100 mt-4"
-                            disabled>
+                        <?php if (!empty($itemsCarrito)): ?>
 
-                            <i class="fas fa-check-circle me-2"></i>
-                            Finalizar pedido
+                            <form
+                                action="<?= url ?>?controller=pedido&action=confirmar"
+                                method="POST"
+                                onsubmit="return confirm('¿Quieres confirmar tu pedido?');"
+                            >
+                                <button
+                                    type="submit"
+                                    class="btn btn-warning fw-bold w-100 mt-4"
+                                >
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Finalizar pedido
+                                </button>
+                            </form>
 
-                        </button>
+                            <p class="text-muted small text-center mt-2 mb-0">
+                                Comprueba tus productos antes de confirmar el pedido.
+                            </p>
 
-                        <p class="text-muted small text-center mt-2 mb-0">
-                            Próximamente podrás confirmar tu pedido.
-                        </p>
+                        <?php endif; ?>
 
                     </div>
 

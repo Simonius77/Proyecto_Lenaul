@@ -1,14 +1,21 @@
 
 <?php
-//controller para la vista del panel de admin MasterClass del 18/11/26 David Navarro
-class adminController {
-    //Funcion para mostrar la vista del panel de admin
+
+// Controlador para la vista del panel de administración
+class adminController
+{
     public function index()
     {
-        //a la variable view le asignamos la ruta de la vista del panel de admin
-        $view = "views/admin/admin.php";
-        //requerimos la vista principal
-        require __DIR__ . '/../views/main.php';
-    }
+        // Ruta absoluta de la vista del administrador
+        $view = __DIR__ . '/../views/admin/admin.php';
 
+        // Comprobar que existe la vista
+        if (!file_exists($view)) {
+            die("No se encuentra la vista: " . $view);
+        }
+
+        // Cargar la plantilla principal
+        $view = __DIR__ . '/../views/admin/admin.php';
+        require_once $view;
+    }
 }

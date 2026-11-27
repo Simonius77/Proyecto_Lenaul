@@ -6,9 +6,9 @@ require_once __DIR__ . '/../config/dataBase.php';
 
 class CategoriaDAO
 {
-    /**
-     * Obtener todas las categorías activas.
-     */
+    
+        // Obtener todas las categorías activas.
+    
     public static function getAll(): array
     {
         $con = DataBase::connect();
@@ -33,9 +33,9 @@ class CategoriaDAO
 
     
 
-    /**
-     * Obtener una categoría por su ID.
-     */
+    
+        // Obtener una categoría por su ID.
+    
     public static function getById(int $id): ?Categoria
     {
         $con = DataBase::connect();
@@ -61,9 +61,9 @@ class CategoriaDAO
         return self::mapearCategoria((object) $fila);
     }
 
-    /**
-     * Crear una categoría.
-     */
+    
+        // Crear una categoría.
+    
     public static function create(Categoria $categoria): int|false
     {
         $con = DataBase::connect();
@@ -95,9 +95,9 @@ class CategoriaDAO
         return $id;
     }
 
-    /**
-     * Actualizar una categoría.
-     */
+    
+        // Actualizar una categoria.
+     
     public static function update(Categoria $categoria): bool
     {
         if ($categoria->getId() === null) {
@@ -135,9 +135,9 @@ class CategoriaDAO
         return $correcto;
     }
 
-    /**
-     * Eliminar una categoría.
-     */
+    
+        // Eliminar una categoría.
+     
     public static function delete(int $id): bool
     {
         $con = DataBase::connect();
@@ -155,9 +155,9 @@ class CategoriaDAO
         return $correcto;
     }
 
-    /**
-     * Convertir una fila de MySQL en un objeto Categoria.
-     */
+    
+        // Convertir una fila de MySQL en un objeto Categoria.
+    
     private static function mapearCategoria(object $fila): Categoria
     {
         return new Categoria(

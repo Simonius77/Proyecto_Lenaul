@@ -10,9 +10,22 @@ require_once __DIR__ . '/../models/Postre.php';
 
 class productoController {
 
+
+private function esAdministrador(): bool
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    return isset($_SESSION['usuario_id'])
+        && isset($_SESSION['usuario_rol'])
+        && strtolower(trim((string) $_SESSION['usuario_rol'])) === 'admin';
+}
+
+
 //API
-//ejemplo de api clase magistral 18/11/26 David Navarro
-//funcion API
+//Ejemplo de api clase magistral 18/11/26 David Navarro
+//Funcion API
     
 public function api()
 {
@@ -50,6 +63,104 @@ public function api()
             exit;
         }
 
+
+        // CREAR UN PRODUCTO
+        if ($metodo === "POST" && $funcion === "crear") {
+
+            if (!$this->esAdministrador()) {
+                http_response_code(403);
+                echo json_encode([
+                    'success' => false,
+                    'mensaje' => 'No tienes permisos para crear productos'
+                ]);
+                exit;
+            }
+
+            $datos = json_decode(file_get_contents("php://input"), true);
+
+            if (!is_array($datos)) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'mensaje' => 'Datos JSON no válidos'
+                ]);
+                exit;
+            }
+
+            $producto = $this->crearObjetoProducto($datos);
+
+            $id = ProductoDAO::create($producto);
+
+            if ($id === false) {
+                throw new RuntimeException('No se pudo crear el producto');
+            }
+
+            http_response_code(201);
+            echo json_encode([
+                'success' => true,
+                'mensaje' => 'Producto creado correctamente',
+                'id' => $id
+            ]);
+            exit;
+        }
+
+
+        // ACTUALIZAR UN PRODUCTO
+        if ($metodo === "PUT" && $funcion === "actualizar") {
+
+            if (!$this->esAdministrador()) {
+                http_response_code(403);
+                echo json_encode([
+                    'success' => false,
+                    'mensaje' => 'No tienes permisos para modificar productos'
+                ]);
+                exit;
+            }
+
+            $datos = json_decode(file_get_contents("php://input"), true);
+
+            if (
+                !is_array($datos) ||
+                !isset($datos['id']) ||
+                !filter_var($datos['id'], FILTER_VALIDATE_INT) ||
+                (int) $datos['id'] <= 0
+            ) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'mensaje' => 'ID de producto no válido'
+                ]);
+                exit;
+            }
+
+            $id = (int) $datos['id'];
+
+            $existente = ProductoDAO::getById($id);
+
+            if (!$existente) {
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'mensaje' => 'El producto no existe'
+                ]);
+                exit;
+            }
+
+            $producto = $this->crearObjetoProducto($datos, $id);
+
+            $actualizado = ProductoDAO::update($producto);
+
+            echo json_encode([
+                'success' => $actualizado,
+                'mensaje' => $actualizado
+                    ? 'Producto actualizado correctamente'
+                    : 'No se pudo actualizar el producto'
+            ]);
+            exit;
+        }
+
+
+
         // ELIMINAR UN PRODUCTO
         if ($metodo === "DELETE" && $funcion === "eliminar") {
 
@@ -64,7 +175,7 @@ public function api()
                 exit;
             }
 
-            // Comprueba aquí que el usuario tiene permisos de administrador.
+            // Comprueba aqui que el usuario tiene permisos de administrador.
             if (!$this->esAdministrador()) {
                 http_response_code(403);
                 echo json_encode([
@@ -125,6 +236,77 @@ public function api()
 }
 
 //FIN de la api clase magistral 18/11/26 David Navarro
+
+//Crear un objeto Producto a partir de los datos recibidos, validando los campos y determinando la clase correcta según la categoría.
+private function crearObjetoProducto(array $datos, ?int $id = null): Producto
+{
+    $categoriaId = filter_var(
+        $datos['categoria_id'] ?? null,
+        FILTER_VALIDATE_INT
+    );
+
+    $nombre = trim($datos['nombre'] ?? '');
+    $descripcion = trim($datos['descripcion'] ?? '');
+    $precio = $datos['precio'] ?? null;
+    $imagen = trim($datos['imagen'] ?? '');
+    $activo = $datos['activo'] ?? true;
+
+    if (!$categoriaId || $categoriaId <= 0) {
+        throw new InvalidArgumentException('Categoría no válida');
+    }
+
+    if ($nombre === '' || strlen($nombre) > 255) {
+        throw new InvalidArgumentException('Nombre no válido');
+    }
+
+    if (!is_numeric($precio) || !is_finite((float) $precio) || (float) $precio < 0) {
+        throw new InvalidArgumentException('Precio no válido');
+    }
+
+    if (!is_bool($activo) && !in_array($activo, [0, 1, '0', '1'], true)) {
+        throw new InvalidArgumentException('Estado no válido');
+    }
+
+    $con = DataBase::connect();
+
+    $sql = "SELECT nombre FROM categorias WHERE id = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("i", $categoriaId);
+    $stmt->execute();
+
+    $resultado = $stmt->get_result();
+    $categoria = $resultado->fetch_assoc();
+
+    $stmt->close();
+    $con->close();
+
+    if (!$categoria) {
+        throw new InvalidArgumentException('La categoría no existe');
+    }
+
+    $nombreCategoria = mb_strtolower(trim($categoria['nombre']));
+
+    if (str_contains($nombreCategoria, 'bebida')) {
+        $clase = Bebida::class;
+    } elseif (str_contains($nombreCategoria, 'postre')) {
+        $clase = Postre::class;
+    } elseif (in_array($nombreCategoria, ['entrantes', 'primeros', 'segundos'], true)) {
+        $clase = Plato::class;
+    } else {
+        throw new InvalidArgumentException('Tipo de categoría no reconocido');
+    }
+
+    return new $clase(
+        (int) $categoriaId,
+        $nombre,
+        $descripcion !== '' ? $descripcion : null,
+        (float) $precio,
+        $imagen !== '' ? $imagen : null,
+        (bool) $activo,
+        $id
+    );
+}
+
 
     
     // Muestra la pantalla de personalización.
